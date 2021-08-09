@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ClothingStore</string>
+    <string name="text_sign_up">Sign Up</string>
+    <string name="text_field_first_name">First Name</string>
 </resources>

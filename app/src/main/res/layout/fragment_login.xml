@@ -4,21 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.activities.LandingActivity">
+    tools:context=".ui.fragments.LoginFragment">
 
-    <com.nischal.clothingstore.utils.viewUtils.DotProgressBar
-        android:id="@+id/bubbleAnimation"
+    <TextView
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
-        android:layout_height="25dp"
-        android:layout_marginBottom="60dp"
+        android:layout_height="wrap_content"
+        android:text="login fragment"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        custom:amount="4"
-        custom:animationDirection="right"
-        custom:animationDuration="@android:integer/config_shortAnimTime"
-        custom:endColor="@color/colorPrimary"
-        custom:startColor="@color/colorPrimary"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="signup"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
