@@ -19,8 +19,11 @@ class LoginFragment: Fragment(R.layout.fragment_login) {
     }
 
     private fun setupClicks() {
-        binding?.btnRegister?.setOnClickListener {
+        binding?.btnGotoSignup?.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_signupFragment)
+        }
+        binding?.btnForgotPassword?.setOnClickListener {
+            findNavController().navigate(R.id.action_loginFragment_to_forgotPasswordFragment)
         }
     }
 

@@ -1,5 +1,20 @@
 <resources>
     <string name="app_name">ClothingStore</string>
     <string name="text_sign_up">Sign Up</string>
-    <string name="text_field_first_name">First Name</string>
+    <string name="text_field_hint_first_name">First Name</string>
+    <string name="text_field_hint_last_name">Last Name</string>
+    <string name="text_field_hint_mobile_number">Mobile Number</string>
+    <string name="text_field_prefix_mobile_number">+ 977</string>
+    <string name="text_field_hint_email">Email</string>
+    <string name="text_field_hint_password">Password</string>
+    <string name="text_field_hint_repeat_password">Repeat Password</string>
+    <string name="btn_text_already_have_an_account">Already have an account?</string>
+    <string name="btn_text_sign_up">Sign up</string>
+    <string name="text_login">Login</string>
+    <string name="btn_text_forgot_your_password">Forgot your password?</string>
+    <string name="btn_text_login">Login</string>
+    <string name="btn_text_don_t_have_an_account_sign_up">Don\'t have an account? Sign up.</string>
+    <string name="text_forgot_password">Forgot Password</string>
+    <string name="text_forgot_password_description">Please, enter your email address. You will receive a link to create a new password via email.</string>
+    <string name="btn_text_send">Send</string>
 </resources>
