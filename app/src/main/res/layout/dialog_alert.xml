@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tool="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="35dp"
+        android:layout_marginEnd="35dp"
+        android:background="@drawable/dialog_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/viewHorizontalSeparator"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="34dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            android:textColor="#000"
+            tool:text="Clothing store"
+            app:layout_constraintVertical_bias="0"
+            android:textAlignment="center"
+            style="@style/TextAppearance.MaterialComponents.Headline6" />
+
+        <TextView
+            android:id="@+id/tvBody"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/viewHorizontalSeparator"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="45dp"
+            android:layout_marginEnd="45dp"
+            android:textAlignment="center"
+            android:textColor="#000"
+            style="@style/TextAppearance.MaterialComponents.Body1"
+            app:layout_constraintVertical_bias="0"
+            tool:text="This is the body mesage"/>
+        
+        <TextView
+            android:id="@+id/tvBtnOk"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            app:layout_constraintStart_toEndOf="@id/tvBtnCancel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/viewHorizontalSeparator"
+            android:gravity="center"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
+            android:textSize="20sp"
+            tool:text="OK"/>
+
+        <TextView
+            android:id="@+id/tvBtnCancel"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="@id/viewVerticalSeparator"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/viewHorizontalSeparator"
+            tool:text="Cancel" />
+
+        <View
+            android:id="@+id/viewHorizontalSeparator"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="34dp"
+            android:background="@color/colorGrayDEDEDE"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvBody" />
+        <View
+            android:id="@+id/viewVerticalSeparator"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:background="@color/colorGrayDEDEDE"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/viewHorizontalSeparator"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
