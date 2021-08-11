@@ -1,10 +1,7 @@
 package com.nischal.clothingstore
 
 import android.app.Application
-import com.nischal.clothingstore.di.appModule
-import com.nischal.clothingstore.di.persistenceDataModule
-import com.nischal.clothingstore.di.repositoryModule
-import com.nischal.clothingstore.di.viewModelModule
+import com.nischal.clothingstore.di.*
 import org.koin.android.ext.android.startKoin
 import timber.log.Timber
 
@@ -14,6 +11,7 @@ class ClothingStoreApp : Application() {
 
         startKoin(
             this, listOf(
+                apiModule,
                 appModule,
                 persistenceDataModule,
                 repositoryModule,
