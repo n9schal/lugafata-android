@@ -25,4 +25,12 @@
     <style name="ButtonFullWidthStyle" parent="Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="cornerRadius">0dp</item>
     </style>
+
+    <style name="BlurDialogTheme" parent="android:Theme.Dialog">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:windowBackground">@color/colorTransparentGray</item>
+        <item name="android:windowNoTitle">false</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
 </resources>
