@@ -35,7 +35,7 @@ android {
             debuggable true
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            buildConfigField("String", "BASE_URL", '"https://api_endpoint/"')
+            buildConfigField("String", "BASE_URL", '"http://10.0.2.2:3000/shop-api/"')
         }
     }
 

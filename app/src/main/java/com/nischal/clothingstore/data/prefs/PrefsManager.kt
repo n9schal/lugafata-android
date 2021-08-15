@@ -2,6 +2,7 @@ package com.nischal.clothingstore.data.prefs
 
 import android.content.SharedPreferences
 import com.google.gson.Gson
+import com.nischal.clothingstore.ui.models.UserDetails
 
 class PrefsManager(private val gson: Gson, private val pref: SharedPreferences) {
 
@@ -16,18 +17,18 @@ class PrefsManager(private val gson: Gson, private val pref: SharedPreferences) 
         }
     }
 
-//    fun setProfileInfo(userInfo: UserDetails) {
-//        val json = gson.toJson(userInfo)
-//        pref.edit().apply {
-//            putString(PrefManagerKey.PROFILE_INFO, json)
-//            apply()
-//        }
-//    }
-//
-//    fun getProfileInfo(): UserDetails {
-//        val data = pref.getString(PrefManagerKey.PROFILE_INFO, "")
-//        return gson.fromJson(data, UserDetails::class.java)
-//    }
+    fun setProfileInfo(userInfo: UserDetails) {
+        val json = gson.toJson(userInfo)
+        pref.edit().apply {
+            putString(PrefManagerKey.PROFILE_INFO, json)
+            apply()
+        }
+    }
+
+    fun getProfileInfo(): UserDetails {
+        val data = pref.getString(PrefManagerKey.PROFILE_INFO, "")
+        return gson.fromJson(data, UserDetails::class.java)
+    }
 
     fun clearData() {
         pref.edit().clear().apply()

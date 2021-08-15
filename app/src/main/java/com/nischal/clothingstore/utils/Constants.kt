@@ -31,7 +31,7 @@ class Constants {
     }
 
     object Strings {
-        const val APP_NAME = "Grocery delivery"
+        const val APP_NAME = "Clothing store"
         const val OK = "OK"
         const val CONFIRM = "CONFIRM"
         const val CANCEL = "Cancel"
@@ -39,5 +39,24 @@ class Constants {
         const val NOT_SIGNED_IN_MESSAGE = "You need to be signed in to continue."
         const val TERMS_AND_CONDITIONS = "Terms and conditions"
         const val PRIVACY_POLICY = "Privacy policy"
+    }
+
+    object VendureOrderStates{
+        const val CREATED = "Created"
+        const val ADDING_ITEMS = "AddingItems"
+        const val ARRANGING_PAYMENT = "ArrangingPayment"
+        const val PAYMENT_AUTHORIZED = "PaymentAuthorized"
+        const val PAYMENT_SETTLED = "PaymentSettled"
+        const val PARTIALLY_SHIPPED = "PartiallyShipped"
+        const val SHIPPED = "Shipped"
+        const val PARTIALLY_DELIVERED = "PartiallyDelivered"
+        const val DELIVERED = "Delivered"
+        const val MODIFYING = "Modifying"
+        const val ARRANGING_ADDITIONAL_PAYMENT = "ArrangingAdditionalPayment"
+        const val CANCELLED = "Cancelled"
+    }
+
+    object ErrorHandlerMessages{
+        const val GENERIC_ERROR_MESSAGE = "Oops! Something went wrong!"
     }
 }

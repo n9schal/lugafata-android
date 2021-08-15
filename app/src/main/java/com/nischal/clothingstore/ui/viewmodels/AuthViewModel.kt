@@ -1,17 +1,21 @@
 package com.nischal.clothingstore.ui.viewmodels
 
 import android.util.Patterns
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
+import com.nischal.clothingstore.ActiveCustomerQuery
 import com.nischal.clothingstore.repositories.AuthRepository
 import com.nischal.clothingstore.ui.models.AlertMessage
 import com.nischal.clothingstore.ui.models.LoginRequest
 import com.nischal.clothingstore.ui.models.RegisterRequest
 import com.nischal.clothingstore.utils.Constants
+import com.nischal.clothingstore.utils.Resource
 import com.nischal.clothingstore.utils.SingleLiveEvent
 
 class AuthViewModel(
-    authRepository: AuthRepository
+    private val authRepository: AuthRepository
 ) : ViewModel() {
+    var activeCustomerQueryMediator = MediatorLiveData<Resource<ActiveCustomerQuery.Data>>()
 
     val alertDialogEvent = SingleLiveEvent<AlertMessage>()
 
@@ -26,6 +30,14 @@ class AuthViewModel(
             //todo do login
         }
     }
+
+    fun activeCustomer() {
+        activeCustomerQueryMediator.addSource(authRepository.activeCustomerQuery()) {
+            activeCustomerQueryMediator.value = it
+        }
+    }
+
+    fun clearPreferences() = authRepository.clearPreferences()
 
     private fun validateSignUp(registerRequest: RegisterRequest): Boolean {
         when {
