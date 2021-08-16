@@ -17,7 +17,7 @@
         android:title="@string/bn_favourites_title" />
 
     <item
-        android:id="@+id/shoppingCartFragment"
+        android:id="@+id/cartFragment"
         android:icon="@drawable/ic_cart"
         android:title="@string/bn_cart_title" />
 
