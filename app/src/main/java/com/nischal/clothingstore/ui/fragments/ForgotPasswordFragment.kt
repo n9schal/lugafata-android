@@ -1,18 +1,23 @@
 package com.nischal.clothingstore.ui.fragments
 
+import android.app.Dialog
 import android.os.Bundle
 import android.util.Patterns
 import android.view.View
+import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.nischal.clothingstore.R
 import com.nischal.clothingstore.databinding.FragmentForgotPasswordBinding
+import com.nischal.clothingstore.ui.activities.AuthActivity
 import com.nischal.clothingstore.ui.viewmodels.AuthViewModel
 import com.nischal.clothingstore.utils.Constants
+import com.nischal.clothingstore.utils.Status
 import com.nischal.clothingstore.utils.extensions.setupUI
 import com.nischal.clothingstore.utils.extensions.showCustomAlertDialog
+import com.nischal.clothingstore.utils.viewUtils.ProgressDialogHelper
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ForgotPasswordFragment : Fragment(R.layout.fragment_forgot_password) {
@@ -37,6 +42,31 @@ class ForgotPasswordFragment : Fragment(R.layout.fragment_forgot_password) {
                     message = it.message,
                     negativeBtnText = null
                 )
+            })
+
+            requestPasswordResetMediator.observe(viewLifecycleOwner, Observer {
+                when(it.status){
+                    Status.LOADING -> {
+                        (requireActivity() as AuthActivity).showLoading("")
+                    }
+                    Status.SUCCESS -> {
+                        (requireActivity() as AuthActivity).hideLoading()
+                        Toast.makeText(
+                            requireContext(),
+                            "Password reset link sent successfully.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        requireActivity().onBackPressed()
+                    }
+                    Status.ERROR -> {
+                        (requireActivity() as AuthActivity).hideLoading()
+                        requireActivity().showCustomAlertDialog(
+                            context = requireActivity(),
+                            message = it.message!!,
+                            negativeBtnText = null
+                        )
+                    }
+                }
             })
         }
     }

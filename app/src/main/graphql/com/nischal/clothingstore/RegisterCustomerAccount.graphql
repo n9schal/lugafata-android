@@ -1,0 +1,17 @@
+mutation RegisterCustomerAccount($input: RegisterCustomerInput!){
+    registerCustomerAccount(
+        input: $input
+    ){
+        ...on Success{
+            success
+        }
+        ...on MissingPasswordError{
+            errorCode
+            message
+        }
+        ...on NativeAuthStrategyError{
+            errorCode
+            message
+        }
+    }
+}

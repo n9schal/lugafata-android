@@ -3,7 +3,9 @@ package com.nischal.clothingstore.ui.viewmodels
 import android.util.Patterns
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
+import com.apollographql.apollo.api.ApolloExperimental
 import com.nischal.clothingstore.ActiveCustomerQuery
+import com.nischal.clothingstore.LoginMutation
 import com.nischal.clothingstore.repositories.AuthRepository
 import com.nischal.clothingstore.ui.models.AlertMessage
 import com.nischal.clothingstore.ui.models.LoginRequest
@@ -16,18 +18,39 @@ class AuthViewModel(
     private val authRepository: AuthRepository
 ) : ViewModel() {
     var activeCustomerQueryMediator = MediatorLiveData<Resource<ActiveCustomerQuery.Data>>()
+    var registerCustomerAccountMutationMediator = MediatorLiveData<Resource<LoginRequest>>()
+    var loginMutationMediator = MediatorLiveData<Resource<LoginMutation.Data>>()
+    var requestPasswordResetMediator = MediatorLiveData<Resource<Any?>>()
 
     val alertDialogEvent = SingleLiveEvent<AlertMessage>()
 
     fun registerCustomerAccountMutation(registerRequest: RegisterRequest) {
-        if (validateSignUp(registerRequest)){
-            // todo do register
+        if (validateSignUp(registerRequest)) {
+            registerCustomerAccountMutationMediator
+                .addSource(authRepository.registerCustomerAccountMutation(registerRequest)) {
+                    registerCustomerAccountMutationMediator.value = it
+                }
         }
     }
 
+    @ApolloExperimental
     fun loginMutation(loginRequest: LoginRequest) {
-        if(validateLogin(loginRequest)){
-            //todo do login
+        if (validateLogin(loginRequest)) {
+            loginMutationMediator.addSource(
+                authRepository.loginMutation(
+                    loginRequest
+                )
+            ) {
+                loginMutationMediator.value = it
+            }
+        }
+    }
+
+    fun requestPasswordReset(email: String) {
+        if (validateEmail(email)) {
+            requestPasswordResetMediator.addSource(authRepository.requestPasswordReset(email)) {
+                requestPasswordResetMediator.value = it
+            }
         }
     }
 
@@ -117,11 +140,5 @@ class AuthViewModel(
             }
         }
         return true
-    }
-
-    fun requestPasswordReset(email: String) {
-        if(validateEmail(email)){
-            //todo do send password reset link
-        }
     }
 }

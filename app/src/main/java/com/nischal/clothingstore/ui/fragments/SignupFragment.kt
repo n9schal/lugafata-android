@@ -1,5 +1,6 @@
 package com.nischal.clothingstore.ui.fragments
 
+import android.app.Dialog
 import android.os.Bundle
 import android.util.Patterns
 import android.view.View
@@ -9,17 +10,22 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.nischal.clothingstore.R
 import com.nischal.clothingstore.databinding.FragmentSignupBinding
+import com.nischal.clothingstore.ui.activities.MainActivity
 import com.nischal.clothingstore.ui.models.RegisterRequest
 import com.nischal.clothingstore.ui.viewmodels.AuthViewModel
 import com.nischal.clothingstore.utils.Constants
+import com.nischal.clothingstore.utils.Status
 import com.nischal.clothingstore.utils.StringUtils
 import com.nischal.clothingstore.utils.extensions.setupUI
 import com.nischal.clothingstore.utils.extensions.showCustomAlertDialog
+import com.nischal.clothingstore.utils.viewUtils.ProgressDialogHelper
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 class SignupFragment : Fragment(R.layout.fragment_signup) {
     private var binding: FragmentSignupBinding? = null
     private val authViewModel: AuthViewModel by viewModel()
+    private var progressDialog: Dialog? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -40,11 +46,95 @@ class SignupFragment : Fragment(R.layout.fragment_signup) {
                     negativeBtnText = null
                 )
             })
+
+            registerCustomerAccountMutationMediator.observe(viewLifecycleOwner, Observer {
+                when (it.status) {
+                    Status.LOADING -> {
+                        showLoading("registering...")
+                    }
+                    Status.SUCCESS -> {
+                        hideLoading()
+                        it.data?.let { loginRequest ->
+                            Timber.d("Registration success")
+                            authViewModel.loginMutation(loginRequest)
+                        }
+                    }
+                    Status.ERROR -> {
+                        hideLoading()
+                        requireActivity().showCustomAlertDialog(
+                            context = requireActivity(),
+                            message = it.message!!,
+                            negativeBtnText = null
+                        )
+                    }
+                }
+            })
+
+            loginMutationMediator.observe(viewLifecycleOwner, Observer {
+                when (it.status) {
+                    Status.LOADING -> {
+                        showLoading("logging in...")
+                    }
+                    Status.SUCCESS -> {
+                        hideLoading()
+                        it.data?.login?.asCurrentUser?.let {
+                            authViewModel.activeCustomer()
+                        }
+                    }
+                    Status.ERROR -> {
+                        hideLoading()
+                        requireActivity().showCustomAlertDialog(
+                            context = requireActivity(),
+                            message = it.message!!,
+                            negativeBtnText = null
+                        )
+                    }
+                }
+            })
+
+            activeCustomerQueryMediator.observe(viewLifecycleOwner, Observer {
+                when(it.status){
+                    Status.LOADING -> {
+                        showLoading("fetching profile...")
+                    }
+                    Status.SUCCESS -> {
+                        hideLoading()
+                        // goto main activity
+                        startActivity(MainActivity.getInstance(requireContext()))
+                        requireActivity().finishAffinity()
+                    }
+                    Status.ERROR -> {
+                        hideLoading()
+                        requireActivity().showCustomAlertDialog(
+                            context = requireActivity(),
+                            message = it.message!!,
+                            negativeBtnText = null
+                        )
+                    }
+                }
+            })
         }
     }
 
     private fun setupViews() {
         setupTextFieldsValidation()
+    }
+
+    private fun setupClicks() {
+        binding?.btnAlreadyHaveAccount?.setOnClickListener {
+            findNavController().navigate(R.id.action_signupFragment_to_loginFragment)
+        }
+        binding?.btnSignup?.setOnClickListener {
+            val registerRequest = RegisterRequest(
+                firstName = binding?.etFirstName?.text.toString(),
+                lastName = binding?.etLastName?.text.toString(),
+                mobileNumber = StringUtils.addNepalCountryCode(binding?.etMobileNumber?.text.toString()),
+                email = binding?.etEmail?.text.toString(),
+                password = binding?.etPassword?.text.toString(),
+                rePassword = binding?.etRepeatPassword?.text.toString()
+            )
+            authViewModel.registerCustomerAccountMutation(registerRequest)
+        }
     }
 
     private fun setupTextFieldsValidation() {
@@ -122,21 +212,14 @@ class SignupFragment : Fragment(R.layout.fragment_signup) {
         }
     }
 
-    private fun setupClicks() {
-        binding?.btnAlreadyHaveAccount?.setOnClickListener {
-            findNavController().navigate(R.id.action_signupFragment_to_loginFragment)
-        }
-        binding?.btnSignup?.setOnClickListener {
-            val registerRequest = RegisterRequest(
-                firstName = binding?.etFirstName?.text.toString(),
-                lastName = binding?.etLastName?.text.toString(),
-                mobileNumber = StringUtils.addNepalCountryCode(binding?.etMobileNumber?.text.toString()),
-                email = binding?.etEmail?.text.toString(),
-                password = binding?.etPassword?.text.toString(),
-                rePassword = binding?.etRepeatPassword?.text.toString()
-            )
-            authViewModel.registerCustomerAccountMutation(registerRequest)
-        }
+    private fun hideLoading() {
+        if (progressDialog != null)
+            progressDialog!!.dismiss()
+    }
+
+    private fun showLoading(message: String) {
+        progressDialog = ProgressDialogHelper.progressDialog(requireContext(), message)
+        progressDialog!!.show()
     }
 
     override fun onDestroyView() {

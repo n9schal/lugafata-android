@@ -4,6 +4,7 @@ import com.nischal.clothingstore.ActiveCustomerQuery
 import com.nischal.clothingstore.utils.Constants
 
 data class RegisterRequest(
+    val title: String? = null,
     val firstName: String,
     val lastName: String,
     val mobileNumber: String,
@@ -14,7 +15,8 @@ data class RegisterRequest(
 
 data class LoginRequest(
     val email: String,
-    val password: String
+    val password: String,
+    val rememberMe: Boolean = false
 )
 
 data class AlertMessage(
