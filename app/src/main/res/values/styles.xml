@@ -33,4 +33,8 @@
         <item name="android:windowNoTitle">false</item>
         <item name="android:windowIsFloating">false</item>
     </style>
+
+    <style name="Toolbar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:background">@color/white</item>
+    </style>
 </resources>

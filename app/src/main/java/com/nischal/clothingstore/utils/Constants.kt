@@ -59,4 +59,10 @@ class Constants {
     object ErrorHandlerMessages{
         const val GENERIC_ERROR_MESSAGE = "Oops! Something went wrong!"
     }
+
+    object StockLevelConstants{
+        const val IN_STOCK = "IN_STOCK"
+        const val OUT_OF_STOCK = "OUT_OF_STOCK"
+        const val LOW_STOCK = "LOW_STOCK"
+    }
 }

@@ -1,5 +1,6 @@
 package com.nischal.clothingstore.ui.models
 
+import androidx.room.PrimaryKey
 import com.nischal.clothingstore.ActiveCustomerQuery
 import com.nischal.clothingstore.utils.Constants
 
@@ -45,3 +46,33 @@ data class UserDetails(
         }
     }
 }
+
+data class Product(
+    @PrimaryKey
+    var productId: String = "",
+    var orderLineId: String = "",
+    val createdAt: String = "",
+    val updatedAt: String = "",
+    val stockLevel: String = "",
+    val description: String = "",
+    val discountPercent: Int = 0,
+    val image: Image = Image(),
+    val productName: String = "",
+    var productPrice: Int = 0,
+    val productUnit: String = "",
+    val unitsSold: Int = 0,
+    var qtyInCart: Int = 0,
+    val facetValueIds: List<String> = listOf()
+)
+
+data class Image(
+    var src: String = "",
+    val title: String = ""
+)
+
+data class HomeCategory(
+    val id: String = "",
+    val title: String = "",
+    val adUrl: String = "",
+    val productList: ArrayList<Product> = arrayListOf()
+)

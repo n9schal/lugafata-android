@@ -9,4 +9,7 @@ class MainRepository(
     private val viewModelScope: CoroutineScope,
     private val apolloClient: ApolloClient
 ) {
+
+    fun getProfileInfoFromPrefs() = prefsManager.getProfileInfo()
+    fun isUserLoggedIn() = !prefsManager.getToken().isNullOrEmpty()
 }

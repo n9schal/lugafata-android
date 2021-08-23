@@ -23,4 +23,8 @@
     <string name="bn_cart_title">Cart</string>
     <string name="bn_profile_title">Profile</string>
     <string name="bn_favourites_title">Favourites</string>
+    <string name="txt_explore">Explore</string>
+    <string name="text_toolbar_title">Home</string>
+    <string name="txt_sold_out">Sold out</string>
+    <string name="txt_currency">NRs </string>
 </resources>
