@@ -65,4 +65,10 @@ class Constants {
         const val OUT_OF_STOCK = "OUT_OF_STOCK"
         const val LOW_STOCK = "LOW_STOCK"
     }
+
+    object SlugConstants{
+        const val HOME_PAGE = "home-page"
+        const val CATEGORIES = "categories"
+    }
+
 }

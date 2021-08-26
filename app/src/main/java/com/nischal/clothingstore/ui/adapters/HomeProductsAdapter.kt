@@ -34,7 +34,7 @@ class HomeProductsAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Product) {
             Glide.with(binding.ivProduct.context)
-                .load(item.image.src)
+                .load(item.productFeaturedAsset.src.replace("\\", "/"))
                 .apply(
                     RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL)
                         .placeholder(R.drawable.ic_launcher_foreground)
@@ -43,11 +43,6 @@ class HomeProductsAdapter(
                 .into(binding.ivProduct)
             binding.tvProductName.text = item.productName
             binding.tvPrice.text = item.productPrice.toString()
-            if(item.stockLevel == OUT_OF_STOCK){
-                binding.tvSoldOut.visibility = View.VISIBLE
-            }else{
-                binding.tvSoldOut.visibility = View.GONE
-            }
         }
     }
 }

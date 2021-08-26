@@ -25,7 +25,7 @@ class HomeCategoriesAdapter(
         return ViewHolder(binding, parent.context)
     }
 
-    fun addItems(homeCategories: List<HomeCategory>) {
+    fun addItems(homeCategories: ArrayList<HomeCategory>) {
         this.homeCategories.clear()
         this.homeCategories.addAll(homeCategories)
         notifyDataSetChanged()

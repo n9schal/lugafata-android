@@ -1,0 +1,26 @@
+query SearchProducts($searchInput: SearchInput!) {
+    search(input: $searchInput) {
+        totalItems
+        items {
+            sku
+            slug
+            productId
+            productName
+            description
+            facetValueIds
+            collectionIds
+            productAsset {
+                preview
+            }
+            priceWithTax {
+                ... on PriceRange {
+                    min
+                    max
+                }
+                ... on SinglePrice {
+                    value
+                }
+            }
+        }
+    }
+}

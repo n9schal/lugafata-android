@@ -2,7 +2,10 @@ package com.nischal.clothingstore.ui.models
 
 import androidx.room.PrimaryKey
 import com.nischal.clothingstore.ActiveCustomerQuery
+import com.nischal.clothingstore.HomePageCollectionsQuery
+import com.nischal.clothingstore.SearchProductsQuery
 import com.nischal.clothingstore.utils.Constants
+import com.nischal.clothingstore.utils.Constants.StockLevelConstants.OUT_OF_STOCK
 
 data class RegisterRequest(
     val title: String? = null,
@@ -47,23 +50,85 @@ data class UserDetails(
     }
 }
 
-data class Product(
+data class ProductVariant(
     @PrimaryKey
-    var productId: String = "",
+    var productVariantId: String = "",
     var orderLineId: String = "",
     val createdAt: String = "",
     val updatedAt: String = "",
-    val stockLevel: String = "",
-    val description: String = "",
-    val discountPercent: Int = 0,
-    val image: Image = Image(),
-    val productName: String = "",
-    var productPrice: Int = 0,
-    val productUnit: String = "",
-    val unitsSold: Int = 0,
+    val productVariantName: String = "",
+    var productVariantPrice: Int = 0,
+    val productVariantStockLevel: String = "",
+    val productVariantDescription: String = "",
+    val productVariantDiscountPercent: Int = 0,
+    val productVariantFeaturedAsset: Image = Image(),
+    val productVariantAssets: List<Image> = arrayListOf(),
     var qtyInCart: Int = 0,
     val facetValueIds: List<String> = listOf()
 )
+
+data class Product(
+    var productId: String = "",
+    val createdAt: String = "",
+    val updatedAt: String = "",
+    val productName: String = "",
+    val productPrice: Int = 0,
+    val productSlug: String = "",
+    val productDescription: String = "",
+    val productFeaturedAsset: Image = Image(),
+    val productAssets: List<Image> = arrayListOf(),
+    // * option category like size and color
+    val optionGroups: List<String> = arrayListOf(),
+    // * option values like XL and Brown
+    val options: List<String> = arrayListOf(),
+    val productVariants: List<ProductVariant> = arrayListOf()
+) {
+
+    companion object {
+        fun removeTrailingZeroInPrice(price: Int) = price / 100
+
+        fun isInStock(productVariants: List<ProductVariant>): Boolean{
+            var isInStock = false
+            if (!productVariants.isNullOrEmpty()) {
+                // * check if all the product variants is out of stock or not
+                for (productVariant in productVariants) {
+                    if (productVariant.productVariantStockLevel != OUT_OF_STOCK) {
+                        isInStock = true
+                        break
+                    }
+                }
+            }
+            return isInStock
+        }
+
+        fun parseToProductList(data: SearchProductsQuery.Data): ArrayList<Product> {
+            val products = arrayListOf<Product>()
+            data.search.items.forEach { searchResult ->
+                val imageUrl: String = if(searchResult.productAsset != null){
+                    searchResult.productAsset.preview
+                }else{
+                    ""
+                }
+                val price: Int = if (searchResult.priceWithTax.asSinglePrice != null) {
+                    searchResult.priceWithTax.asSinglePrice.value
+                } else {
+                    searchResult.priceWithTax.asPriceRange?.max ?: 0
+                }
+
+                val product = Product(
+                    productId = searchResult.productId,
+                    productName = searchResult.productName,
+                    productPrice = removeTrailingZeroInPrice(price),
+                    productSlug = searchResult.slug,
+                    productDescription = searchResult.description,
+                    productFeaturedAsset = Image(src = imageUrl)
+                )
+                products.add(product)
+            }
+            return products
+        }
+    }
+}
 
 data class Image(
     var src: String = "",
@@ -75,4 +140,20 @@ data class HomeCategory(
     val title: String = "",
     val adUrl: String = "",
     val productList: ArrayList<Product> = arrayListOf()
-)
+) {
+    companion object{
+        fun parseToHomeCategories(data: HomePageCollectionsQuery.Data): ArrayList<HomeCategory> {
+            val homeCategories = arrayListOf<HomeCategory>()
+            data.collections.items.forEach { collection ->
+                if (collection.parent?.slug == Constants.SlugConstants.HOME_PAGE) {
+                    val homeCategory = HomeCategory(
+                        id = collection.id,
+                        title = collection.name
+                    )
+                    homeCategories.add(homeCategory)
+                }
+            }
+            return homeCategories
+        }
+    }
+}
