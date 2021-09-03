@@ -1,0 +1,28 @@
+query CategoryCollections(
+    $collectionListOptions: CollectionListOptions
+){
+    collections(options: $collectionListOptions){
+        totalItems
+        items{
+            id
+            name
+            slug
+            featuredAsset{
+                source
+            }
+            parent{
+                id
+                name
+                slug
+            }
+            children{
+                id
+                name
+                slug
+                featuredAsset{
+                    source
+                }
+            }
+        }
+    }
+}

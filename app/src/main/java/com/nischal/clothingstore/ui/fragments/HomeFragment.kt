@@ -8,9 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.nischal.clothingstore.R
 import com.nischal.clothingstore.databinding.FragmentHomeBinding
 import com.nischal.clothingstore.ui.adapters.HomeCategoriesAdapter
-import com.nischal.clothingstore.ui.models.HomeCategory
-import com.nischal.clothingstore.ui.models.Image
-import com.nischal.clothingstore.ui.models.Product
 import com.nischal.clothingstore.ui.viewmodels.MainViewModel
 import com.nischal.clothingstore.utils.Status
 import com.nischal.clothingstore.utils.extensions.showCustomAlertDialog
@@ -87,11 +84,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun setupToolbar() {
         binding?.includedToolbar?.ivBack?.visibility = View.GONE
+        binding?.includedToolbar?.ivSearch?.visibility = View.GONE
         if (mainViewModel.isUserLoggedIn()) {
             binding?.includedToolbar?.tvTitle?.text =
                 "Welcome ${mainViewModel.getProfileInfoFromPrefs().firstName}"
         } else {
-            binding?.includedToolbar?.tvTitle?.text = getString(R.string.text_toolbar_title)
+            binding?.includedToolbar?.tvTitle?.text = getString(R.string.text_toolbar_home_title)
         }
     }
 

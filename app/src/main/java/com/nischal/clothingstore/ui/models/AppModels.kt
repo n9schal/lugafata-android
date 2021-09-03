@@ -2,10 +2,12 @@ package com.nischal.clothingstore.ui.models
 
 import androidx.room.PrimaryKey
 import com.nischal.clothingstore.ActiveCustomerQuery
+import com.nischal.clothingstore.CategoryCollectionsQuery
 import com.nischal.clothingstore.HomePageCollectionsQuery
 import com.nischal.clothingstore.SearchProductsQuery
 import com.nischal.clothingstore.utils.Constants
 import com.nischal.clothingstore.utils.Constants.StockLevelConstants.OUT_OF_STOCK
+import java.io.Serializable
 
 data class RegisterRequest(
     val title: String? = null,
@@ -87,7 +89,7 @@ data class Product(
     companion object {
         fun removeTrailingZeroInPrice(price: Int) = price / 100
 
-        fun isInStock(productVariants: List<ProductVariant>): Boolean{
+        fun isInStock(productVariants: List<ProductVariant>): Boolean {
             var isInStock = false
             if (!productVariants.isNullOrEmpty()) {
                 // * check if all the product variants is out of stock or not
@@ -104,9 +106,9 @@ data class Product(
         fun parseToProductList(data: SearchProductsQuery.Data): ArrayList<Product> {
             val products = arrayListOf<Product>()
             data.search.items.forEach { searchResult ->
-                val imageUrl: String = if(searchResult.productAsset != null){
+                val imageUrl: String = if (searchResult.productAsset != null) {
                     searchResult.productAsset.preview
-                }else{
+                } else {
                     ""
                 }
                 val price: Int = if (searchResult.priceWithTax.asSinglePrice != null) {
@@ -141,7 +143,7 @@ data class HomeCategory(
     val adUrl: String = "",
     val productList: ArrayList<Product> = arrayListOf()
 ) {
-    companion object{
+    companion object {
         fun parseToHomeCategories(data: HomePageCollectionsQuery.Data): ArrayList<HomeCategory> {
             val homeCategories = arrayListOf<HomeCategory>()
             data.collections.items.forEach { collection ->
@@ -157,3 +159,65 @@ data class HomeCategory(
         }
     }
 }
+
+data class Category(
+    val categoryId: String = "",
+    val categoryName: String = "",
+    val collectionSlug: String = "",
+    val parentCollectionSlug: String = "",
+    val image: Image = Image(),
+    val subCategories: ArrayList<SubCategory> = arrayListOf()
+) : Serializable {
+    companion object {
+        fun parseToCategories(
+            data: CategoryCollectionsQuery.Data
+        ): ArrayList<Category> {
+            val categories = arrayListOf<Category>()
+            // * outer loop for category
+            data.collections.items.forEach { collection ->
+                if (collection.parent?.slug!!.contains(Constants.SlugConstants.CATEGORIES, true)
+                    && !collection.children.isNullOrEmpty()
+                ) {
+                    val subCategories = arrayListOf<SubCategory>()
+                    // * inner loop for subcategory
+                    collection.children.forEach { subCategory ->
+                        val subCategoryImageUrl = if (subCategory.featuredAsset != null) {
+                            subCategory.featuredAsset.source
+                        } else {
+                            ""
+                        }
+                        val subCat = SubCategory(
+                            subCategoryId = subCategory.id,
+                            subCategoryName = subCategory.name,
+                            image = Image(src = subCategoryImageUrl),
+                            parentCategoryId = collection.id
+                        )
+                        subCategories.add(subCat)
+                    }
+                    val categoryImageUrl = if(collection.featuredAsset != null){
+                        collection.featuredAsset.source
+                    }else {
+                        ""
+                    }
+                    val category = Category(
+                        categoryId = collection.id,
+                        categoryName = collection.name,
+                        collectionSlug = collection.slug,
+                        parentCollectionSlug = collection.parent.slug,
+                        image = Image(src = categoryImageUrl)
+                    )
+                    categories.add(category)
+                }
+            }
+            return categories
+        }
+    }
+}
+
+
+data class SubCategory(
+    val subCategoryId: String = "",
+    val parentCategoryId: String = "",
+    val subCategoryName: String = "",
+    val image: Image = Image()
+)

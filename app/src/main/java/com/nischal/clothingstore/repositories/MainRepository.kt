@@ -6,6 +6,7 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.coroutines.await
 import com.apollographql.apollo.exception.ApolloException
+import com.nischal.clothingstore.CategoryCollectionsQuery
 import com.nischal.clothingstore.HomePageCollectionsQuery
 import com.nischal.clothingstore.SearchProductsQuery
 import com.nischal.clothingstore.data.prefs.PrefsManager
@@ -13,10 +14,12 @@ import com.nischal.clothingstore.type.CollectionFilterParameter
 import com.nischal.clothingstore.type.CollectionListOptions
 import com.nischal.clothingstore.type.SearchInput
 import com.nischal.clothingstore.type.StringOperators
+import com.nischal.clothingstore.ui.models.Category
 import com.nischal.clothingstore.ui.models.HomeCategory
 import com.nischal.clothingstore.ui.models.Product
 import com.nischal.clothingstore.utils.Constants
 import com.nischal.clothingstore.utils.Constants.ErrorHandlerMessages.GENERIC_ERROR_MESSAGE
+import com.nischal.clothingstore.utils.Constants.SlugConstants.CATEGORIES
 import com.nischal.clothingstore.utils.Constants.Strings.APP_NAME
 import com.nischal.clothingstore.utils.Resource
 import kotlinx.coroutines.CoroutineScope
@@ -78,8 +81,50 @@ class MainRepository(
                             homeCategory.productList.addAll(productList)
                         }
                     }
-                    val filteredHomeCategories = homeCategories.filter { homeCategory -> homeCategory.productList.isNotEmpty() }
+                    val filteredHomeCategories =
+                        homeCategories.filter { homeCategory -> homeCategory.productList.isNotEmpty() }
                     response.postValue(Resource.success(filteredHomeCategories as ArrayList<HomeCategory>))
+                } else {
+                    throw ApolloException(GENERIC_ERROR_MESSAGE)
+                }
+            } catch (e: ApolloException) {
+                response.postValue(
+                    Resource.error(
+                        msg = e.message.toString(),
+                        data = null,
+                        title = APP_NAME
+                    )
+                )
+            }
+        }
+        return response
+    }
+
+    fun fetchCategories(): LiveData<Resource<ArrayList<Category>>> {
+        val response = MutableLiveData<Resource<ArrayList<Category>>>()
+        viewModelScope.launch {
+            try {
+                response.postValue(Resource.loading(null))
+                val collectionListOptions = CollectionListOptions(
+                    take = Input.fromNullable(null),
+                    skip = Input.fromNullable(null),
+                    sort = Input.fromNullable(null),
+                    filter = Input.fromNullable(
+                        CollectionFilterParameter(
+                            slug = Input.fromNullable(
+                                StringOperators(contains = Input.fromNullable(CATEGORIES))
+                            )
+                        )
+                    )
+                )
+                val apolloResult = apolloClient.query(
+                    CategoryCollectionsQuery(
+                        collectionListOptions = Input.fromNullable(collectionListOptions)
+                    )
+                ).await()
+                if (apolloResult.data != null) {
+                    val categories = Category.parseToCategories(apolloResult.data!!)
+                    response.postValue(Resource.success(categories))
                 } else {
                     throw ApolloException(GENERIC_ERROR_MESSAGE)
                 }
