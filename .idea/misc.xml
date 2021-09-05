@@ -6,9 +6,11 @@
         <entry key="..\:/Users/acer/AndroidStudioProjects/ClothingStore/app/src/main/res/drawable/ic_back.xml" value="0.22962962962962963" />
         <entry key="..\:/Users/acer/AndroidStudioProjects/ClothingStore/app/src/main/res/layout/fragment_categories.xml" value="0.4" />
         <entry key="..\:/Users/acer/AndroidStudioProjects/ClothingStore/app/src/main/res/layout/fragment_home.xml" value="0.20018115942028986" />
+        <entry key="..\:/Users/acer/AndroidStudioProjects/ClothingStore/app/src/main/res/layout/fragment_subcategories.xml" value="0.264" />
         <entry key="..\:/Users/acer/AndroidStudioProjects/ClothingStore/app/src/main/res/layout/layout_categories_item.xml" value="0.264" />
         <entry key="..\:/Users/acer/AndroidStudioProjects/ClothingStore/app/src/main/res/layout/layout_products_item.xml" value="0.2" />
         <entry key="..\:/Users/acer/AndroidStudioProjects/ClothingStore/app/src/main/res/layout/layout_toolbar.xml" value="0.264" />
+        <entry key="..\:/Users/acer/AndroidStudioProjects/ClothingStore/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.2152777777777778" />
       </map>
     </option>
   </component>

@@ -14,7 +14,15 @@
         android:id="@+id/categoriesFragment"
         android:name="com.nischal.clothingstore.ui.fragments.CategoriesFragment"
         android:label="fragment_categories"
-        tools:layout="@layout/fragment_categories" />
+        tools:layout="@layout/fragment_categories" >
+        <action
+            android:id="@+id/action_categoriesFragment_to_subCategoriesFragment"
+            app:destination="@id/subCategoriesFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
     <fragment
         android:id="@+id/favouritesFragment"
         android:name="com.nischal.clothingstore.ui.fragments.FavouritesFragment"
@@ -30,4 +38,16 @@
         android:name="com.nischal.clothingstore.ui.fragments.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/subCategoriesFragment"
+        android:name="com.nischal.clothingstore.ui.fragments.SubCategoriesFragment"
+        android:label="fragment_subcategories"
+        tools:layout="@layout/fragment_subcategories" >
+        <argument
+            android:name="demography"
+            app:argType="string" />
+        <argument
+            android:name="selectedCategory"
+            app:argType="com.nischal.clothingstore.ui.models.Category" />
+    </fragment>
 </navigation>

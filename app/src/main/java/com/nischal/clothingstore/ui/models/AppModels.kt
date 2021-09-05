@@ -189,6 +189,7 @@ data class Category(
                         val subCat = SubCategory(
                             subCategoryId = subCategory.id,
                             subCategoryName = subCategory.name,
+                            subCategorySlug = subCategory.slug,
                             image = Image(src = subCategoryImageUrl),
                             parentCategoryId = collection.id
                         )
@@ -204,7 +205,8 @@ data class Category(
                         categoryName = collection.name,
                         collectionSlug = collection.slug,
                         parentCollectionSlug = collection.parent.slug,
-                        image = Image(src = categoryImageUrl)
+                        image = Image(src = categoryImageUrl),
+                        subCategories = subCategories
                     )
                     categories.add(category)
                 }
@@ -218,6 +220,7 @@ data class Category(
 data class SubCategory(
     val subCategoryId: String = "",
     val parentCategoryId: String = "",
+    val subCategorySlug: String = "",
     val subCategoryName: String = "",
     val image: Image = Image()
 )

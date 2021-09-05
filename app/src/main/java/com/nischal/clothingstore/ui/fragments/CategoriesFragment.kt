@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
 import com.nischal.clothingstore.R
@@ -67,6 +68,20 @@ class CategoriesFragment : Fragment(R.layout.fragment_categories) {
                     }
                 }
             })
+
+            categoryClickedEvent.observe(viewLifecycleOwner, Observer {
+                val demography: String =
+                    binding?.tlGender?.getTabAt(binding?.tlGender?.selectedTabPosition!!)?.text.toString()
+                val selectedCategory: Category = it
+                val bundle = Bundle().apply {
+                    putString("demography", demography)
+                    putSerializable("selectedCategory", selectedCategory)
+                }
+                findNavController().navigate(
+                    R.id.action_categoriesFragment_to_subCategoriesFragment,
+                    bundle
+                )
+            })
         }
     }
 
@@ -98,7 +113,7 @@ class CategoriesFragment : Fragment(R.layout.fragment_categories) {
         }
     }
 
-    private fun filterCategories(tab: TabLayout.Tab?){
+    private fun filterCategories(tab: TabLayout.Tab?) {
         val slug = "categories-" + tab?.text!!
         val filteredCategories = unfilteredCategories.filter { category ->
             category.parentCollectionSlug.contains(
@@ -118,8 +133,8 @@ class CategoriesFragment : Fragment(R.layout.fragment_categories) {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         binding = null
     }
 }
