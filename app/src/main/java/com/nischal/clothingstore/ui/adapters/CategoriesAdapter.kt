@@ -8,10 +8,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.nischal.clothingstore.R
 import com.nischal.clothingstore.databinding.LayoutCategoriesItemBinding
-import com.nischal.clothingstore.databinding.LayoutProductsItemBinding
 import com.nischal.clothingstore.ui.models.Category
-import com.nischal.clothingstore.ui.models.HomeCategory
-import com.nischal.clothingstore.ui.models.Product
 import com.nischal.clothingstore.ui.viewmodels.MainViewModel
 
 class CategoriesAdapter(
