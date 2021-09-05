@@ -21,16 +21,16 @@ class SubCategoriesFragment: Fragment(R.layout.fragment_subcategories) {
     }
 
     private fun setupViews() {
+        binding?.chipAll?.setOnCheckedChangeListener { selectedChip, isChecked ->
+            if(isChecked){
+                // * fetch all sub-categories products
+                binding?.tvTesttext?.text = "all"
+            }
+        }
         args.selectedCategory.subCategories.forEach { subCategory ->
             val chip = Chip(requireContext())
             chip.text = subCategory.subCategoryName
             chip.isCheckable = true
-            chip.setOnClickListener {
-                if(!chip.isChecked){
-                    // * fetch all sub-categories
-                    binding?.tvTesttext?.text = "all"
-                }
-            }
             chip.setOnCheckedChangeListener { selectedChip, isChecked ->
                 if(isChecked){
                     // * fetch only selected sub-category
