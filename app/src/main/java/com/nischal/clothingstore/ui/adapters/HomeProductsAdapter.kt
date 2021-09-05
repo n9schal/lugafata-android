@@ -1,17 +1,15 @@
 package com.nischal.clothingstore.ui.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.nischal.clothingstore.R
-import com.nischal.clothingstore.databinding.LayoutProductsItemBinding
+import com.nischal.clothingstore.databinding.LayoutHomeProductsItemBinding
 import com.nischal.clothingstore.ui.models.Product
 import com.nischal.clothingstore.ui.viewmodels.MainViewModel
-import com.nischal.clothingstore.utils.Constants.StockLevelConstants.OUT_OF_STOCK
 
 class HomeProductsAdapter(
     private val products: MutableList<Product>,
@@ -20,7 +18,7 @@ class HomeProductsAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = LayoutProductsItemBinding.inflate(inflater, parent, false)
+        val binding = LayoutHomeProductsItemBinding.inflate(inflater, parent, false)
         return ViewHolder(binding)
     }
 
@@ -30,7 +28,7 @@ class HomeProductsAdapter(
         (holder as ViewHolder).bind(products[position])
     }
 
-    inner class ViewHolder(val binding: LayoutProductsItemBinding) :
+    inner class ViewHolder(val binding: LayoutHomeProductsItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Product) {
             Glide.with(binding.ivProduct.context)
