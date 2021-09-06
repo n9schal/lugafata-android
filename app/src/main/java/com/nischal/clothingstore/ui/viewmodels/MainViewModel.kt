@@ -5,27 +5,45 @@ import androidx.lifecycle.ViewModel
 import com.nischal.clothingstore.repositories.MainRepository
 import com.nischal.clothingstore.ui.models.Category
 import com.nischal.clothingstore.ui.models.HomeCategory
+import com.nischal.clothingstore.ui.models.Product
 import com.nischal.clothingstore.utils.Resource
 import com.nischal.clothingstore.utils.SingleLiveEvent
 
 class MainViewModel(
     private val mainRepository: MainRepository
-): ViewModel() {
+) : ViewModel() {
     val fetchHomePageContentsMediator = MediatorLiveData<Resource<ArrayList<HomeCategory>>>()
     val fetchCategoriesMediator = MediatorLiveData<Resource<ArrayList<Category>>>()
+    val fetchSubCategoriesMediator = MediatorLiveData<Resource<ArrayList<Product>>>()
 
     val viewAllClickedEvent = SingleLiveEvent<HomeCategory>()
     val categoryClickedEvent = SingleLiveEvent<Category>()
 
-    fun fetchHomePageContents(){
-        fetchHomePageContentsMediator.addSource(mainRepository.fetchHomePageContents()){
+    fun fetchHomePageContents() {
+        fetchHomePageContentsMediator.addSource(mainRepository.fetchHomePageContents()) {
             fetchHomePageContentsMediator.value = it
         }
     }
 
-    fun fetchCategories(){
-        fetchCategoriesMediator.addSource(mainRepository.fetchCategories()){
+    fun fetchCategories() {
+        fetchCategoriesMediator.addSource(mainRepository.fetchCategories()) {
             fetchCategoriesMediator.value = it
+        }
+    }
+
+    fun fetchSubCategories(
+        currentPage: Int,
+        pageSize: Int,
+        subCategoryId: String
+    ) {
+        fetchSubCategoriesMediator.addSource(
+            mainRepository.fetchSubCategories(
+                currentPage,
+                pageSize,
+                subCategoryId
+            )
+        ) {
+            fetchSubCategoriesMediator.value = it
         }
     }
 

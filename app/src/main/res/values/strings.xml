@@ -31,4 +31,5 @@
     <string name="tab_text_men">Men</string>
     <string name="tab_text_women">Women</string>
     <string name="chip_text_all">All</string>
+    <string name="text_empty_products">Sorry, we dont have any products of this category.</string>
 </resources>

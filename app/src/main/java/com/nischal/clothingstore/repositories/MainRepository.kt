@@ -140,4 +140,42 @@ class MainRepository(
         }
         return response
     }
+
+    fun fetchSubCategories(
+        currentPage: Int,
+        pageSize: Int,
+        subCategoryId: String
+    ): LiveData<Resource<ArrayList<Product>>> {
+        val response = MutableLiveData<Resource<ArrayList<Product>>>()
+        viewModelScope.launch {
+            try {
+                response.postValue(Resource.loading(null))
+                val skip = currentPage * pageSize
+                val searchInput = SearchInput(
+                    skip = Input.fromNullable(skip),
+                    take = Input.fromNullable(pageSize),
+                    collectionId = Input.fromNullable(subCategoryId),
+                    groupByProduct = Input.fromNullable(true)
+                )
+                val searchResult = apolloClient.query(
+                    SearchProductsQuery(searchInput = searchInput)
+                ).await()
+                if (searchResult.data != null) {
+                    val productList = Product.parseToProductList(searchResult.data!!)
+                    response.postValue(Resource.success(productList))
+                } else {
+                    throw ApolloException(GENERIC_ERROR_MESSAGE)
+                }
+            } catch (e: ApolloException) {
+                response.postValue(
+                    Resource.error(
+                        msg = e.message.toString(),
+                        data = null,
+                        title = APP_NAME
+                    )
+                )
+            }
+        }
+        return response
+    }
 }
