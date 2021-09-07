@@ -4,14 +4,14 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.nischal.clothingstore.R
-import com.nischal.clothingstore.databinding.FragmentFavouritesBinding
+import com.nischal.clothingstore.databinding.FragmentSearchBinding
 
-class FavouritesFragment: Fragment(R.layout.fragment_favourites) {
-    private var binding: FragmentFavouritesBinding? = null
+class SearchFragment: Fragment(R.layout.fragment_search) {
+    private var binding: FragmentSearchBinding? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentFavouritesBinding.bind(view)
+        binding = FragmentSearchBinding.bind(view)
     }
 
     override fun onDestroy() {

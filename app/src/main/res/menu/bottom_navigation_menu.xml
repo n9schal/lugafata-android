@@ -8,13 +8,13 @@
 
     <item
         android:id="@+id/categoriesFragment"
-        android:icon="@drawable/ic_catalog"
+        android:icon="@drawable/ic_baseline_category_24"
         android:title="@string/bn_categories_title" />
 
     <item
-        android:id="@+id/favouritesFragment"
-        android:icon="@drawable/ic_favorite"
-        android:title="@string/bn_favourites_title" />
+        android:id="@+id/searchFragment"
+        android:icon="@drawable/ic_baseline_search_24"
+        android:title="@string/bn_search_title" />
 
     <item
         android:id="@+id/cartFragment"

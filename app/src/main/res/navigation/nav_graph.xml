@@ -24,10 +24,10 @@
             app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
-        android:id="@+id/favouritesFragment"
-        android:name="com.nischal.clothingstore.ui.fragments.FavouritesFragment"
-        android:label="fragment_favourites"
-        tools:layout="@layout/fragment_favourites" />
+        android:id="@+id/searchFragment"
+        android:name="com.nischal.clothingstore.ui.fragments.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" />
     <fragment
         android:id="@+id/cartFragment"
         android:name="com.nischal.clothingstore.ui.fragments.CartFragment"
