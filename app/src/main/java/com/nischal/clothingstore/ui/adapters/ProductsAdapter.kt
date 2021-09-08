@@ -57,6 +57,10 @@ class ProductsAdapter(
                 .into(binding.ivProduct)
             binding.tvProductName.text = item.productName
             binding.tvPrice.text = item.productPrice.toString()
+
+            binding.clProduct.setOnClickListener {
+                mainViewModel.productClickedEvent.value = item
+            }
         }
     }
 }

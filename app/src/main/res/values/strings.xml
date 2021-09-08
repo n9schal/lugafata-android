@@ -32,4 +32,5 @@
     <string name="tab_text_women">Women</string>
     <string name="chip_text_all">All</string>
     <string name="text_empty_products">Sorry, we dont have any products of this category.</string>
+    <string name="btn_text_add_to_bag">Add To Bag</string>
 </resources>

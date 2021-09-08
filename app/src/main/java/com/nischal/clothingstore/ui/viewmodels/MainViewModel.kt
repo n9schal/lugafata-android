@@ -18,6 +18,7 @@ class MainViewModel(
 
     val viewAllClickedEvent = SingleLiveEvent<HomeCategory>()
     val categoryClickedEvent = SingleLiveEvent<Category>()
+    val productClickedEvent = SingleLiveEvent<Product>()
 
     fun fetchHomePageContents() {
         fetchHomePageContentsMediator.addSource(mainRepository.fetchHomePageContents()) {

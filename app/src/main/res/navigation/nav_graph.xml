@@ -49,5 +49,17 @@
         <argument
             android:name="selectedCategory"
             app:argType="com.nischal.clothingstore.ui.models.Category" />
+        <action
+            android:id="@+id/action_subCategoriesFragment_to_productDetailsFragment"
+            app:destination="@id/productDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
+    <fragment
+        android:id="@+id/productDetailsFragment"
+        android:name="com.nischal.clothingstore.ui.fragments.ProductDetailsFragment"
+        android:label="fragment_product_details"
+        tools:layout="@layout/fragment_product_details" />
 </navigation>

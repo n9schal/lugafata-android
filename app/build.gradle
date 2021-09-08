@@ -129,6 +129,9 @@ dependencies {
 
     // Timber
     implementation 'com.jakewharton.timber:timber:4.7.1'
+
+    // material dots indicator
+    implementation 'com.tbuonomo:dotsindicator:4.2'
 }
 
 apollo {

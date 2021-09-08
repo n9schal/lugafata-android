@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.chip.Chip
@@ -81,6 +82,10 @@ class SubCategoriesFragment : Fragment(R.layout.fragment_subcategories) {
                         )
                     }
                 }
+            })
+
+            productClickedEvent.observe(viewLifecycleOwner, Observer {
+                findNavController().navigate(R.id.action_subCategoriesFragment_to_productDetailsFragment)
             })
         }
     }
