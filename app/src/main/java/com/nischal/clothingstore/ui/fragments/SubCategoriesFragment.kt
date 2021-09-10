@@ -85,7 +85,10 @@ class SubCategoriesFragment : Fragment(R.layout.fragment_subcategories) {
             })
 
             productClickedEvent.observe(viewLifecycleOwner, Observer {
-                findNavController().navigate(R.id.action_subCategoriesFragment_to_productDetailsFragment)
+                val bundle = Bundle().apply {
+                    putSerializable("product", it)
+                }
+                findNavController().navigate(R.id.action_subCategoriesFragment_to_productDetailsFragment, bundle)
             })
         }
     }
@@ -161,15 +164,11 @@ class SubCategoriesFragment : Fragment(R.layout.fragment_subcategories) {
 
     private fun setupToolbar() {
         binding?.includedToolbar?.ivBack?.visibility = View.VISIBLE
-        binding?.includedToolbar?.ivSearch?.visibility = View.VISIBLE
         binding?.includedToolbar?.tvTitle?.text =
             args.demography + "'s " + args.selectedCategory.categoryName
 
         binding?.includedToolbar?.ivBack?.setOnClickListener {
             requireActivity().onBackPressed()
-        }
-        binding?.includedToolbar?.ivSearch?.setOnClickListener {
-            //todo navigate to search page
         }
     }
 

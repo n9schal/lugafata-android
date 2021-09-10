@@ -125,12 +125,8 @@ class CategoriesFragment : Fragment(R.layout.fragment_categories) {
 
     private fun setupToolbar() {
         binding?.includedToolbar?.ivBack?.visibility = View.GONE
-        binding?.includedToolbar?.ivSearch?.visibility = View.VISIBLE
         binding?.includedToolbar?.tvTitle?.text = getString(R.string.text_toolbar_categories_title)
 
-        binding?.includedToolbar?.ivSearch?.setOnClickListener {
-            // todo navigate to search page
-        }
     }
 
     override fun onDestroyView() {

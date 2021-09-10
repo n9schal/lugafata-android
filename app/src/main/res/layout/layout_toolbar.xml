@@ -23,35 +23,26 @@
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
             android:src="@drawable/ic_back"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tvTitle" />
 
-        <ImageView
-            android:id="@+id/ivSearch"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginEnd="16dp"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:src="@drawable/ic_baseline_search_24"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/tvTitle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tvTitle" />
-
         <TextView
             android:id="@+id/tvTitle"
             style="@style/TextAppearance.MaterialComponents.Headline5"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
+            android:layout_marginStart="56dp"
+            android:layout_marginEnd="56dp"
+            android:textAlignment="center"
+            android:singleLine="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Welcome, joe" />
+            tools:text="Welcome, joe rogan to my app" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.appbar.AppBarLayout>

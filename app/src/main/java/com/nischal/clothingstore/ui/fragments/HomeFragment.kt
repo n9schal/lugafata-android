@@ -84,7 +84,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun setupToolbar() {
         binding?.includedToolbar?.ivBack?.visibility = View.GONE
-        binding?.includedToolbar?.ivSearch?.visibility = View.GONE
         if (mainViewModel.isUserLoggedIn()) {
             binding?.includedToolbar?.tvTitle?.text =
                 "Welcome ${mainViewModel.getProfileInfoFromPrefs().firstName}"

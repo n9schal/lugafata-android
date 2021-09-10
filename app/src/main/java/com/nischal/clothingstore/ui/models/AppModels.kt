@@ -67,7 +67,7 @@ data class ProductVariant(
     val productVariantAssets: List<Image> = arrayListOf(),
     var qtyInCart: Int = 0,
     val facetValueIds: List<String> = listOf()
-)
+): Serializable
 
 data class Product(
     var productId: String = "",
@@ -78,13 +78,13 @@ data class Product(
     val productSlug: String = "",
     val productDescription: String = "",
     val productFeaturedAsset: Image = Image(),
-    val productAssets: List<Image> = arrayListOf(),
+    val productAssets: ArrayList<Image> = arrayListOf(),
     // * option category like size and color
-    val optionGroups: List<String> = arrayListOf(),
+    val optionGroups: ArrayList<String> = arrayListOf(),
     // * option values like XL and Brown
-    val options: List<String> = arrayListOf(),
-    val productVariants: List<ProductVariant> = arrayListOf()
-) {
+    val options: ArrayList<String> = arrayListOf(),
+    val productVariants: ArrayList<ProductVariant> = arrayListOf()
+): Serializable {
 
     companion object {
         fun removeTrailingZeroInPrice(price: Int) = price / 100
@@ -135,7 +135,7 @@ data class Product(
 data class Image(
     var src: String = "",
     val title: String = ""
-)
+): Serializable
 
 data class HomeCategory(
     val id: String = "",

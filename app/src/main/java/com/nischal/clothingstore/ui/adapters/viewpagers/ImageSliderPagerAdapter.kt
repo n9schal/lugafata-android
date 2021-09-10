@@ -4,13 +4,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.nischal.clothingstore.ui.fragments.ImageSliderPagerFragment
+import com.nischal.clothingstore.ui.models.Image
 
-class ImageSliderPagerAdapter(activity: FragmentActivity, private val imageUrlList: ArrayList<String>): FragmentStateAdapter(activity) {
+class ImageSliderPagerAdapter(activity: FragmentActivity, private val images: ArrayList<Image>): FragmentStateAdapter(activity) {
     override fun getItemCount(): Int {
-        return imageUrlList.size
+        return images.size
     }
 
     override fun createFragment(position: Int): Fragment {
-        return ImageSliderPagerFragment.getInstance(imageUrlList[position])
+        return ImageSliderPagerFragment.getInstance(images[position].src)
     }
 }
