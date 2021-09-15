@@ -15,6 +15,7 @@ class MainViewModel(
     val fetchHomePageContentsMediator = MediatorLiveData<Resource<ArrayList<HomeCategory>>>()
     val fetchCategoriesMediator = MediatorLiveData<Resource<ArrayList<Category>>>()
     val fetchSubCategoriesMediator = MediatorLiveData<Resource<ArrayList<Product>>>()
+    val fetchProductDetailsMediator = MediatorLiveData<Resource<Product>>()
 
     val viewAllClickedEvent = SingleLiveEvent<HomeCategory>()
     val categoryClickedEvent = SingleLiveEvent<Category>()
@@ -45,6 +46,20 @@ class MainViewModel(
             )
         ) {
             fetchSubCategoriesMediator.value = it
+        }
+    }
+
+    fun fetchProductDetail(
+        id: String,
+        slug: String
+    ){
+        fetchProductDetailsMediator.addSource(
+            mainRepository.fetchProductDetails(
+                id,
+                slug
+            )
+        ){
+            fetchProductDetailsMediator.value = it
         }
     }
 

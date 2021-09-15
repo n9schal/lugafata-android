@@ -132,6 +132,9 @@ dependencies {
 
     // material dots indicator
     implementation 'com.tbuonomo:dotsindicator:4.2'
+
+    //shimmer effect
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
 }
 
 apollo {

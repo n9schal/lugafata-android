@@ -2,55 +2,168 @@ package com.nischal.clothingstore.ui.fragments
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.nischal.clothingstore.R
 import com.nischal.clothingstore.databinding.FragmentProductDetailsBinding
 import com.nischal.clothingstore.ui.adapters.viewpagers.ImageSliderPagerAdapter
+import com.nischal.clothingstore.ui.models.Product
+import com.nischal.clothingstore.ui.viewmodels.MainViewModel
+import com.nischal.clothingstore.utils.Status
+import com.nischal.clothingstore.utils.extensions.showCustomAlertDialog
+import kotlinx.android.synthetic.main.layout_product_details.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
-class ProductDetailsFragment: Fragment(R.layout.fragment_product_details) {
+class ProductDetailsFragment : Fragment(R.layout.fragment_product_details) {
     private var binding: FragmentProductDetailsBinding? = null
     private val args: ProductDetailsFragmentArgs by navArgs()
+    private val mainViewModel: MainViewModel by viewModel()
+
+    private lateinit var imageSliderPagerAdapter: ImageSliderPagerAdapter
+    private lateinit var product: Product
 
     private var imageSliderPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
         }
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentProductDetailsBinding.bind(view)
-
+        product = args.product
         setupToolbar()
-        setupViewPager()
+        setupViews()
+        setupObservers()
+
+        mainViewModel.fetchProductDetail(
+            id = product.productId,
+            slug = product.productSlug
+        )
     }
 
-    private fun setupViewPager() {
-//        val imageList: ArrayList<String> = arrayListOf(
-//            "https://assets.adidas.com/images/h_840,f_auto,q_auto:sensitive,fl_lossy,c_fill,g_auto/e725107a3d7041389f94ab220123fbcb_9366/Bravada_Shoes_Black_FV8085_01_standard.jpg",
-//            "https://assets.adidas.com/images/w_600,f_auto,q_auto/9de5e247c04a45e7a1faab220124efc3_9366/Tenis_Bravada_Negro_FV8097_01_standard.jpg",
-//            "https://storage.googleapis.com/tradeinn-images/images/products_image/13766/fotos/137668652.jpg",
-//            "https://assets.adidas.com/images/w_600,f_auto,q_auto/af6bbdfea9214acca9a3ab3800c54d30_9366/Bravada_Shoes_White_FV8086_01_standard.jpg"
-//        )
-        val imageSliderPagerAdapter = ImageSliderPagerAdapter(requireActivity(), arrayListOf(args.product.productFeaturedAsset))
-        binding?.imageSliderViewPager?.adapter = imageSliderPagerAdapter
-        binding?.wormDotsIndicator?.setViewPager2(binding?.imageSliderViewPager!!)
+    private fun setupObservers() {
+        with(mainViewModel) {
+            fetchProductDetailsMediator.observe(viewLifecycleOwner, Observer {
+                when (it.status) {
+                    Status.LOADING -> {
+                        showLoading()
+                    }
+                    Status.SUCCESS -> {
+                        hideLoading()
+                        it.data?.let { prod ->
+                            // * update product
+                            product.productFeaturedAsset = prod.productFeaturedAsset
+                            product.productAssets.clear()
+                            product.productAssets.addAll(prod.productAssets)
+                            product.productVariants.clear()
+                            product.productVariants.addAll(prod.productVariants)
+                            product.optionGroups.clear()
+                            product.optionGroups.addAll(prod.optionGroups)
+                            updateViews()
+                        }
+                    }
+                    Status.ERROR -> {
+                        hideLoading()
+                        requireActivity().showCustomAlertDialog(
+                            context = requireActivity(),
+                            message = it.message!!,
+                            negativeBtnText = null
+                        )
+                    }
+                }
+            })
+        }
+    }
 
+    private fun setupViews() {
+        // * setup viewpager
+        imageSliderPagerAdapter = ImageSliderPagerAdapter(requireActivity(), arrayListOf())
+        binding?.includedLayoutProductDetail?.imageSliderViewPager?.adapter =
+            imageSliderPagerAdapter
         // register viewpager page change callback
-        binding?.imageSliderViewPager?.registerOnPageChangeCallback(imageSliderPageChangeCallback)
+        binding?.includedLayoutProductDetail?.imageSliderViewPager?.registerOnPageChangeCallback(
+            imageSliderPageChangeCallback
+        )
+        // * setup dot indicator
+        binding?.includedLayoutProductDetail?.wormDotsIndicator?.setViewPager2(binding?.includedLayoutProductDetail?.imageSliderViewPager!!)
+
+        binding?.includedLayoutProductDetail?.etOptionSize?.doOnTextChanged { inputText, start, before, count ->
+            // * update price
+            for (variant in product.productVariants) {
+                for (option in variant.options) {
+                    if (option.optionName == inputText.toString()) {
+                        binding?.includedLayoutProductDetail?.tvProductPrice?.text =
+                            variant.productVariantPrice.toString()
+                    }
+                }
+            }
+        }
+
+        binding?.includedLayoutProductDetail?.btnAddToBag?.setOnClickListener {
+            if (etOptionSize.text.isNotEmpty()) {
+                // todo
+                Timber.d(etOptionSize.text.toString())
+            } else {
+                Timber.d("size field empty")
+            }
+        }
+    }
+
+    private fun updateViews() {
+        binding?.includedLayoutProductDetail?.tvProductName?.text = product.productName
+        binding?.includedLayoutProductDetail?.tvProductPrice?.text = product.productPrice.toString()
+
+        // * show/hide dot indicator
+        if (product.productAssets.size <= 1) {
+            binding?.includedLayoutProductDetail?.wormDotsIndicator?.visibility = View.GONE
+            imageSliderPagerAdapter.addImages(arrayListOf(product.productFeaturedAsset))
+        } else {
+            binding?.includedLayoutProductDetail?.wormDotsIndicator?.visibility = View.VISIBLE
+            imageSliderPagerAdapter.addImages(product.productAssets)
+        }
+
+        // * update option
+        val optionTexts = arrayListOf<String>()
+        if (product.optionGroups.isNotEmpty()) {
+            product.optionGroups[0].options.forEach { option -> optionTexts.add(option.optionName) }
+        }
+        val adapter = ArrayAdapter(requireContext(), R.layout.layout_dropdown_item, optionTexts)
+        binding?.includedLayoutProductDetail?.etOptionSize?.setAdapter(adapter)
+    }
+
+    private fun showLoading() {
+        binding?.includedLayoutProductDetail?.clProductDetails?.visibility =
+            View.GONE
+        binding?.shimmerLayout?.visibility = View.VISIBLE
+        binding?.shimmerLayout?.startShimmer()
+    }
+
+    private fun hideLoading() {
+        binding?.includedLayoutProductDetail?.clProductDetails?.visibility =
+            View.VISIBLE
+        binding?.shimmerLayout?.visibility = View.GONE
+        binding?.shimmerLayout?.stopShimmer()
     }
 
     private fun setupToolbar() {
-        binding?.includedToolbar?.ivBack?.visibility = View.VISIBLE
-        binding?.includedToolbar?.tvTitle?.text = args.product.productName
-        binding?.includedToolbar?.ivBack?.setOnClickListener {
+        binding?.includedLayoutProductDetail?.includedToolbar?.ivBack?.visibility = View.VISIBLE
+        binding?.includedLayoutProductDetail?.includedToolbar?.tvTitle?.text =
+            args.product.productName
+        binding?.includedLayoutProductDetail?.includedToolbar?.ivBack?.setOnClickListener {
             requireActivity().onBackPressed()
         }
     }
 
     override fun onDestroyView() {
-        binding?.imageSliderViewPager?.unregisterOnPageChangeCallback(imageSliderPageChangeCallback)
+        binding?.includedLayoutProductDetail?.imageSliderViewPager?.unregisterOnPageChangeCallback(
+            imageSliderPageChangeCallback
+        )
         super.onDestroyView()
         binding = null
     }

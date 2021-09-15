@@ -11,6 +11,12 @@ class ImageSliderPagerAdapter(activity: FragmentActivity, private val images: Ar
         return images.size
     }
 
+    fun addImages(images: ArrayList<Image>){
+        this.images.clear()
+        this.images.addAll(images)
+        notifyDataSetChanged()
+    }
+
     override fun createFragment(position: Int): Fragment {
         return ImageSliderPagerFragment.getInstance(images[position].src)
     }

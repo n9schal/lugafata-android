@@ -1,10 +1,7 @@
 package com.nischal.clothingstore.ui.models
 
 import androidx.room.PrimaryKey
-import com.nischal.clothingstore.ActiveCustomerQuery
-import com.nischal.clothingstore.CategoryCollectionsQuery
-import com.nischal.clothingstore.HomePageCollectionsQuery
-import com.nischal.clothingstore.SearchProductsQuery
+import com.nischal.clothingstore.*
 import com.nischal.clothingstore.utils.Constants
 import com.nischal.clothingstore.utils.Constants.StockLevelConstants.OUT_OF_STOCK
 import java.io.Serializable
@@ -54,20 +51,66 @@ data class UserDetails(
 
 data class ProductVariant(
     @PrimaryKey
-    var productVariantId: String = "",
+    val productVariantId: String = "",
+    val productId: String = "",
     var orderLineId: String = "",
+    val productVariantName: String = "",
+    val productVariantSku: String = "",
     val createdAt: String = "",
     val updatedAt: String = "",
-    val productVariantName: String = "",
     var productVariantPrice: Int = 0,
     val productVariantStockLevel: String = "",
     val productVariantDescription: String = "",
     val productVariantDiscountPercent: Int = 0,
     val productVariantFeaturedAsset: Image = Image(),
-    val productVariantAssets: List<Image> = arrayListOf(),
+    val productVariantAssets: ArrayList<Image> = arrayListOf(),
     var qtyInCart: Int = 0,
-    val facetValueIds: List<String> = listOf()
-): Serializable
+    val facetValueIds: ArrayList<String> = arrayListOf(),
+    val options: ArrayList<Option> = arrayListOf()
+) : Serializable {
+    companion object {
+        fun parseToProductVariants(data: ArrayList<ProductQuery.Variant>): ArrayList<ProductVariant> {
+            val productVariants = arrayListOf<ProductVariant>()
+            data.forEach { variant ->
+                val imageUrl: String = if (variant.featuredAsset != null) {
+                    variant.featuredAsset.source
+                } else {
+                    ""
+                }
+                // * add image assets
+                val images = arrayListOf<Image>()
+                variant.assets.forEach { asset -> images.add(Image(src = asset.source)) }
+                // * add options
+                val options = arrayListOf<Option>()
+                variant.options.forEach { option ->
+                    options.add(
+                        Option(
+                            optionId = option.id,
+                            optionCode = option.code,
+                            optionName = option.name
+                        )
+                    )
+                }
+
+                val tempVariant = ProductVariant(
+                    productVariantId = variant.id,
+                    productId = variant.productId,
+                    productVariantName = variant.name,
+                    productVariantSku = variant.sku,
+                    createdAt = variant.createdAt.toString(),
+                    updatedAt = variant.updatedAt.toString(),
+                    productVariantPrice = variant.priceWithTax / 100,
+                    productVariantStockLevel = variant.stockLevel,
+                    productVariantFeaturedAsset = Image(src = imageUrl),
+                    productVariantAssets = images,
+                    options = options
+                )
+                productVariants.add(tempVariant)
+            }
+            return productVariants
+        }
+    }
+}
 
 data class Product(
     var productId: String = "",
@@ -77,17 +120,13 @@ data class Product(
     val productPrice: Int = 0,
     val productSlug: String = "",
     val productDescription: String = "",
-    val productFeaturedAsset: Image = Image(),
+    var productFeaturedAsset: Image = Image(),
     val productAssets: ArrayList<Image> = arrayListOf(),
-    // * option category like size and color
-    val optionGroups: ArrayList<String> = arrayListOf(),
-    // * option values like XL and Brown
-    val options: ArrayList<String> = arrayListOf(),
+    val optionGroups: ArrayList<OptionGroup> = arrayListOf(),
     val productVariants: ArrayList<ProductVariant> = arrayListOf()
-): Serializable {
+) : Serializable {
 
     companion object {
-        fun removeTrailingZeroInPrice(price: Int) = price / 100
 
         fun isInStock(productVariants: List<ProductVariant>): Boolean {
             var isInStock = false
@@ -120,7 +159,7 @@ data class Product(
                 val product = Product(
                     productId = searchResult.productId,
                     productName = searchResult.productName,
-                    productPrice = removeTrailingZeroInPrice(price),
+                    productPrice = price / 100,
                     productSlug = searchResult.slug,
                     productDescription = searchResult.description,
                     productFeaturedAsset = Image(src = imageUrl)
@@ -129,13 +168,85 @@ data class Product(
             }
             return products
         }
+
+        fun parseToProduct(data: ProductQuery.Product): Product {
+            // * parse option groups and options
+            val optionGroups =
+                OptionGroup.parseToOptionGroups(data.optionGroups as ArrayList<ProductQuery.OptionGroup>)
+
+            // * parse productVariants
+            val productVariants =
+                ProductVariant.parseToProductVariants(data.variants as ArrayList<ProductQuery.Variant>)
+
+            val imageUrl = if (data.featuredAsset != null) {
+                data.featuredAsset.source
+            } else {
+                ""
+            }
+
+            val images = arrayListOf<Image>()
+            data.assets.forEach { asset -> images.add(Image(src = asset.source)) }
+
+            return Product(
+                productId = data.id,
+                createdAt = data.createdAt.toString(),
+                updatedAt = data.updatedAt.toString(),
+                productName = data.name,
+                productSlug = data.slug,
+                productDescription = data.description,
+                optionGroups = optionGroups,
+                productVariants = productVariants,
+                productFeaturedAsset = Image(src = imageUrl),
+                productAssets = images
+            )
+        }
     }
 }
+
+// * option category like size and color
+data class OptionGroup(
+    val optionGroupId: String = "",
+    val optionGroupCode: String = "",
+    val optionGroupName: String = "",
+    val options: ArrayList<Option> = arrayListOf()
+) {
+    companion object {
+        fun parseToOptionGroups(data: ArrayList<ProductQuery.OptionGroup>): ArrayList<OptionGroup> {
+            val optionGroups = arrayListOf<OptionGroup>()
+            data.forEach { optionGroup ->
+                val options = arrayListOf<Option>()
+                optionGroup.options.forEach { option ->
+                    val tempOption = Option(
+                        optionId = option.id,
+                        optionCode = option.code,
+                        optionName = option.name
+                    )
+                    options.add(tempOption)
+                }
+                val tempOptionGroup = OptionGroup(
+                    optionGroupId = optionGroup.id,
+                    optionGroupCode = optionGroup.code,
+                    optionGroupName = optionGroup.name,
+                    options = options
+                )
+                optionGroups.add(tempOptionGroup)
+            }
+            return optionGroups
+        }
+    }
+}
+
+// * option values like XL and Brown
+data class Option(
+    val optionId: String = "",
+    val optionCode: String = "",
+    val optionName: String = ""
+)
 
 data class Image(
     var src: String = "",
     val title: String = ""
-): Serializable
+) : Serializable
 
 data class HomeCategory(
     val id: String = "",
@@ -195,9 +306,9 @@ data class Category(
                         )
                         subCategories.add(subCat)
                     }
-                    val categoryImageUrl = if(collection.featuredAsset != null){
+                    val categoryImageUrl = if (collection.featuredAsset != null) {
                         collection.featuredAsset.source
-                    }else {
+                    } else {
                         ""
                     }
                     val category = Category(

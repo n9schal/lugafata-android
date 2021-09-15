@@ -8,6 +8,7 @@ import com.apollographql.apollo.coroutines.await
 import com.apollographql.apollo.exception.ApolloException
 import com.nischal.clothingstore.CategoryCollectionsQuery
 import com.nischal.clothingstore.HomePageCollectionsQuery
+import com.nischal.clothingstore.ProductQuery
 import com.nischal.clothingstore.SearchProductsQuery
 import com.nischal.clothingstore.data.prefs.PrefsManager
 import com.nischal.clothingstore.type.CollectionFilterParameter
@@ -23,6 +24,7 @@ import com.nischal.clothingstore.utils.Constants.SlugConstants.CATEGORIES
 import com.nischal.clothingstore.utils.Constants.Strings.APP_NAME
 import com.nischal.clothingstore.utils.Resource
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainRepository(
@@ -164,6 +166,39 @@ class MainRepository(
                     val productList = Product.parseToProductList(searchResult.data!!)
                     response.postValue(Resource.success(productList))
                 } else {
+                    throw ApolloException(GENERIC_ERROR_MESSAGE)
+                }
+            } catch (e: ApolloException) {
+                response.postValue(
+                    Resource.error(
+                        msg = e.message.toString(),
+                        data = null,
+                        title = APP_NAME
+                    )
+                )
+            }
+        }
+        return response
+    }
+
+
+    // * query product details for updating product variants and option groups only
+    // * this query is not for already available values like product price and image assets
+    fun fetchProductDetails(
+        id: String,
+        slug: String
+    ): LiveData<Resource<Product>> {
+        val response = MutableLiveData<Resource<Product>>()
+        viewModelScope.launch {
+            try {
+                response.postValue(Resource.loading(null))
+                val productResult = apolloClient.query(
+                    ProductQuery(id = Input.fromNullable(id), slug = Input.fromNullable(slug))
+                ).await()
+                if(productResult.data != null && productResult.data?.product != null){
+                    val product = Product.parseToProduct(productResult.data!!.product!!)
+                    response.postValue(Resource.success(product))
+                }else{
                     throw ApolloException(GENERIC_ERROR_MESSAGE)
                 }
             } catch (e: ApolloException) {
