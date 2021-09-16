@@ -63,6 +63,8 @@ class MainViewModel(
         }
     }
 
+    fun getShoppingListFromDb() = mainRepository.getShoppingList()
+
     fun getProfileInfoFromPrefs() = mainRepository.getProfileInfoFromPrefs()
     fun isUserLoggedIn() = mainRepository.isUserLoggedIn()
 }

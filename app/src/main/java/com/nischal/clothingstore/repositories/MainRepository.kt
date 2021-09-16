@@ -10,6 +10,7 @@ import com.nischal.clothingstore.CategoryCollectionsQuery
 import com.nischal.clothingstore.HomePageCollectionsQuery
 import com.nischal.clothingstore.ProductQuery
 import com.nischal.clothingstore.SearchProductsQuery
+import com.nischal.clothingstore.data.db.dao.ShoppingListDao
 import com.nischal.clothingstore.data.prefs.PrefsManager
 import com.nischal.clothingstore.type.CollectionFilterParameter
 import com.nischal.clothingstore.type.CollectionListOptions
@@ -18,6 +19,7 @@ import com.nischal.clothingstore.type.StringOperators
 import com.nischal.clothingstore.ui.models.Category
 import com.nischal.clothingstore.ui.models.HomeCategory
 import com.nischal.clothingstore.ui.models.Product
+import com.nischal.clothingstore.ui.models.ProductVariant
 import com.nischal.clothingstore.utils.Constants
 import com.nischal.clothingstore.utils.Constants.ErrorHandlerMessages.GENERIC_ERROR_MESSAGE
 import com.nischal.clothingstore.utils.Constants.SlugConstants.CATEGORIES
@@ -30,7 +32,8 @@ import kotlinx.coroutines.launch
 class MainRepository(
     private val prefsManager: PrefsManager,
     private val viewModelScope: CoroutineScope,
-    private val apolloClient: ApolloClient
+    private val apolloClient: ApolloClient,
+    private val shoppingListDao: ShoppingListDao
 ) {
 
     fun getProfileInfoFromPrefs() = prefsManager.getProfileInfo()
@@ -213,4 +216,30 @@ class MainRepository(
         }
         return response
     }
+
+    /**
+     * ============================================================================================================
+     * Database Operations
+     * ============================================================================================================
+     * */
+
+    fun updateShoppingList(productVariant: ProductVariant) {
+        viewModelScope.launch {
+            shoppingListDao.upsert(productVariant)
+        }
+    }
+
+    fun deleteShoppingListItem(productVariant: ProductVariant) {
+        viewModelScope.launch {
+            shoppingListDao.deleteShoppingListItem(productVariant)
+        }
+    }
+
+    fun clearShoppingList() {
+        viewModelScope.launch {
+            shoppingListDao.deleteAllShoppingList()
+        }
+    }
+
+    fun getShoppingList() = shoppingListDao.getShoppingList()
 }

@@ -1,5 +1,6 @@
 package com.nischal.clothingstore.ui.models
 
+import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.nischal.clothingstore.*
 import com.nischal.clothingstore.utils.Constants
@@ -49,6 +50,9 @@ data class UserDetails(
     }
 }
 
+@Entity(
+    tableName = "productVariants"
+)
 data class ProductVariant(
     @PrimaryKey
     val productVariantId: String = "",
