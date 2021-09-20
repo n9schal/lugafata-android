@@ -8,7 +8,7 @@ import com.nischal.clothingstore.ui.models.ProductVariant
 
 @Database(
     entities = [ProductVariant::class],
-    version = 0,
+    version = 1,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

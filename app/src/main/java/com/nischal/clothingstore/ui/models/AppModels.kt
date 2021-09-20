@@ -67,10 +67,10 @@ data class ProductVariant(
     val productVariantDescription: String = "",
     val productVariantDiscountPercent: Int = 0,
     val productVariantFeaturedAsset: Image = Image(),
-    val productVariantAssets: ArrayList<Image> = arrayListOf(),
+    val productVariantAssets: List<Image> = listOf(),
     var qtyInCart: Int = 0,
-    val facetValueIds: ArrayList<String> = arrayListOf(),
-    val options: ArrayList<Option> = arrayListOf()
+    val facetValueIds: List<String> = listOf(),
+    val options: List<Option> = listOf()
 ) : Serializable {
     companion object {
         fun parseToProductVariants(data: ArrayList<ProductQuery.Variant>): ArrayList<ProductVariant> {

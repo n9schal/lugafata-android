@@ -6,6 +6,7 @@ import com.nischal.clothingstore.repositories.MainRepository
 import com.nischal.clothingstore.ui.models.Category
 import com.nischal.clothingstore.ui.models.HomeCategory
 import com.nischal.clothingstore.ui.models.Product
+import com.nischal.clothingstore.ui.models.ProductVariant
 import com.nischal.clothingstore.utils.Resource
 import com.nischal.clothingstore.utils.SingleLiveEvent
 
@@ -61,6 +62,10 @@ class MainViewModel(
         ){
             fetchProductDetailsMediator.value = it
         }
+    }
+
+    fun updateShoppingListInDb(productVariant: ProductVariant) {
+        mainRepository.updateShoppingList(productVariant)
     }
 
     fun getShoppingListFromDb() = mainRepository.getShoppingList()

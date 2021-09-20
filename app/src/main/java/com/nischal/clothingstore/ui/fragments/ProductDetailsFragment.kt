@@ -3,17 +3,21 @@ package com.nischal.clothingstore.ui.fragments
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.snackbar.Snackbar
 import com.nischal.clothingstore.R
 import com.nischal.clothingstore.databinding.FragmentProductDetailsBinding
 import com.nischal.clothingstore.ui.adapters.viewpagers.ImageSliderPagerAdapter
 import com.nischal.clothingstore.ui.models.Product
+import com.nischal.clothingstore.ui.models.ProductVariant
 import com.nischal.clothingstore.ui.viewmodels.MainViewModel
 import com.nischal.clothingstore.utils.Status
+import com.nischal.clothingstore.utils.extensions.showAddToBagDialog
 import com.nischal.clothingstore.utils.extensions.showCustomAlertDialog
 import kotlinx.android.synthetic.main.layout_product_details.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -23,6 +27,8 @@ class ProductDetailsFragment : Fragment(R.layout.fragment_product_details) {
     private var binding: FragmentProductDetailsBinding? = null
     private val args: ProductDetailsFragmentArgs by navArgs()
     private val mainViewModel: MainViewModel by viewModel()
+    private var selectedProductVariant: ProductVariant? = null
+    private var productVariantsFromDb: ArrayList<ProductVariant> = arrayListOf()
 
     private lateinit var imageSliderPagerAdapter: ImageSliderPagerAdapter
     private lateinit var product: Product
@@ -78,6 +84,24 @@ class ProductDetailsFragment : Fragment(R.layout.fragment_product_details) {
                     }
                 }
             })
+
+            getShoppingListFromDb().observe(viewLifecycleOwner, Observer { productVariants ->
+                if (!productVariants.isNullOrEmpty()) {
+                    productVariantsFromDb.clear()
+                    productVariantsFromDb.addAll(productVariants)
+
+                    // * update selected variant with qty in cart if already added to bag
+                    try {
+                        if (selectedProductVariant != null) {
+                            val matchedVariant: ProductVariant =
+                                productVariantsFromDb.first { item -> item.productVariantId == selectedProductVariant!!.productVariantId }
+                            selectedProductVariant = matchedVariant
+                        }
+                    } catch (e: NoSuchElementException) {
+
+                    }
+                }
+            })
         }
     }
 
@@ -100,19 +124,48 @@ class ProductDetailsFragment : Fragment(R.layout.fragment_product_details) {
                     if (option.optionName == inputText.toString()) {
                         binding?.includedLayoutProductDetail?.tvProductPrice?.text =
                             variant.productVariantPrice.toString()
+                        // * update selected variant with qty in cart if already added to bag
+                        selectedProductVariant = try {
+                            val matchedVariant: ProductVariant =
+                                productVariantsFromDb.first { item -> item.productVariantId == variant.productVariantId }
+                            matchedVariant
+                        } catch (e: NoSuchElementException) {
+                            variant
+                        }
                     }
                 }
             }
         }
 
         binding?.includedLayoutProductDetail?.btnAddToBag?.setOnClickListener {
-            if (etOptionSize.text.isNotEmpty()) {
-                // todo
-                Timber.d(etOptionSize.text.toString())
+            if (etOptionSize.text.isNotEmpty() && selectedProductVariant != null) {
+                requireActivity().showAddToBagDialog(
+                    context = requireActivity(),
+                    productVariant = selectedProductVariant!!,
+                    addBtnClicked = { productVariant ->
+                        mainViewModel.updateShoppingListInDb(productVariant)
+                        showSnackbar()
+                    }
+                )
             } else {
-                Timber.d("size field empty")
+                requireActivity().showCustomAlertDialog(
+                    context = requireActivity(),
+                    message = "Please select your appropriate size first.",
+                    negativeBtnText = null
+                )
             }
         }
+    }
+
+    private fun showSnackbar() {
+        Snackbar.make(requireActivity().window.decorView.findViewById(android.R.id.content), "Product has been added to your bag.", Snackbar.LENGTH_LONG)
+            .apply {
+                setAction("Show") {
+                    // todo navigate to bag page
+                    Timber.d("navigated to bag")
+                }
+                show()
+            }
     }
 
     private fun updateViews() {

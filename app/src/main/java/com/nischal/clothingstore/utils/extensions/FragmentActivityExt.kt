@@ -8,7 +8,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.fragment.app.FragmentActivity
 import com.nischal.clothingstore.R
+import com.nischal.clothingstore.ui.dialogs.AddToBagDialog
 import com.nischal.clothingstore.ui.dialogs.AlertDialog
+import com.nischal.clothingstore.ui.models.ProductVariant
 import com.nischal.clothingstore.utils.Constants
 
 /**
@@ -73,5 +75,19 @@ fun FragmentActivity.showCustomAlertDialog(
         cancelable = cancelable,
         positiveBtnClicked = positiveBtnClicked,
         negativeBtnClicked = negativeBtnClicked
+    )
+}
+
+fun FragmentActivity.showAddToBagDialog(
+    context: Activity,
+    tag: String = Constants.Strings.DIALOG_TAG,
+    productVariant: ProductVariant,
+    addBtnClicked: (productVariant: ProductVariant) -> Unit
+){
+    AddToBagDialog.showAddToBagDialog(
+        fragmentManager = (context as FragmentActivity).supportFragmentManager,
+        tag = tag,
+        productVariant = productVariant,
+        addBtnClicked = addBtnClicked
     )
 }

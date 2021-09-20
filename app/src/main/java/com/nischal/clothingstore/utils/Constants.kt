@@ -28,6 +28,7 @@ class Constants {
         const val POSITIVE_BTN_TXT = "POSITIVE_BTN_TXT"
         const val NEGATIVE_BTN_TXT = "NEGATIVE_BTN_TXT"
         const val DIALOG_CANCELABLE = "DIALOG_CANCELABLE"
+        const val SELECTED_PRODUCT_VARIANT = "SELECTED_PRODUCT_VARIANT"
     }
 
     object Strings {
