@@ -21,6 +21,7 @@ class MainViewModel(
     val viewAllClickedEvent = SingleLiveEvent<HomeCategory>()
     val categoryClickedEvent = SingleLiveEvent<Category>()
     val productClickedEvent = SingleLiveEvent<Product>()
+    val productDeleteClicked = SingleLiveEvent<ProductVariant>()
 
     fun fetchHomePageContents() {
         fetchHomePageContentsMediator.addSource(mainRepository.fetchHomePageContents()) {
@@ -53,13 +54,13 @@ class MainViewModel(
     fun fetchProductDetail(
         id: String,
         slug: String
-    ){
+    ) {
         fetchProductDetailsMediator.addSource(
             mainRepository.fetchProductDetails(
                 id,
                 slug
             )
-        ){
+        ) {
             fetchProductDetailsMediator.value = it
         }
     }
@@ -69,6 +70,8 @@ class MainViewModel(
     }
 
     fun getShoppingListFromDb() = mainRepository.getShoppingList()
+    fun deleteShoppingListItemFromDb(productVariant: ProductVariant) =
+        mainRepository.deleteShoppingListItem(productVariant)
 
     fun getProfileInfoFromPrefs() = mainRepository.getProfileInfoFromPrefs()
     fun isUserLoggedIn() = mainRepository.isUserLoggedIn()
