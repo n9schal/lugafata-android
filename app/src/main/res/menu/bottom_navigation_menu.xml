@@ -5,16 +5,10 @@
         android:icon="@drawable/ic_home"
         android:title="@string/bn_home_title" />
 
-
     <item
         android:id="@+id/categoriesFragment"
         android:icon="@drawable/ic_baseline_category_24"
         android:title="@string/bn_categories_title" />
-
-    <item
-        android:id="@+id/searchFragment"
-        android:icon="@drawable/ic_baseline_search_24"
-        android:title="@string/bn_search_title" />
 
     <item
         android:id="@+id/cartFragment"

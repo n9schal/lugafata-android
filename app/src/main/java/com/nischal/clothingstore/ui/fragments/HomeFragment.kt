@@ -4,9 +4,12 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.appbar.AppBarLayout
 import com.nischal.clothingstore.R
 import com.nischal.clothingstore.databinding.FragmentHomeBinding
+import com.nischal.clothingstore.ui.activities.MainActivity
 import com.nischal.clothingstore.ui.adapters.HomeCategoriesAdapter
 import com.nischal.clothingstore.ui.viewmodels.MainViewModel
 import com.nischal.clothingstore.utils.Status
@@ -83,12 +86,41 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun setupToolbar() {
-        binding?.includedToolbar?.ivBack?.visibility = View.GONE
+        (requireActivity() as MainActivity).setSupportActionBar(toolbar)
+        app_bar.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
+            var isShow = false
+            var scrollRange = -1
+            override fun onOffsetChanged(
+                appBarLayout: AppBarLayout,
+                verticalOffset: Int
+            ) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.totalScrollRange
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    isShow = true
+                    // * show search icon
+                    ivSearch.visibility = View.VISIBLE
+                } else if (isShow) {
+                    isShow = false
+                    // * hide search icon
+                    ivSearch.visibility = View.GONE
+                }
+            }
+        })
+
+        binding?.llSearch?.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
+        }
+        binding?.ivSearch?.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
+        }
+
         if (mainViewModel.isUserLoggedIn()) {
-            binding?.includedToolbar?.tvTitle?.text =
+            binding?.tvTitle?.text =
                 "Welcome ${mainViewModel.getProfileInfoFromPrefs().firstName}"
         } else {
-            binding?.includedToolbar?.tvTitle?.text = getString(R.string.text_toolbar_home_title)
+            binding?.tvTitle?.text = getString(R.string.text_toolbar_home_title)
         }
     }
 
