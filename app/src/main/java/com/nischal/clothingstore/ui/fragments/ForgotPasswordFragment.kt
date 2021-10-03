@@ -100,8 +100,8 @@ class ForgotPasswordFragment : Fragment(R.layout.fragment_forgot_password) {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         binding = null
     }
 }

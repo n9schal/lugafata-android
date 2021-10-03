@@ -154,8 +154,8 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         )
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         binding = null
     }
 }

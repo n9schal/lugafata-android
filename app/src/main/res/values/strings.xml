@@ -38,6 +38,7 @@
     <string name="text_empty_searched_products">Sorry, we could not find any products.</string>
     <string name="text_empty_cart">You have not added anything in your bag.</string>
     <string name="btn_text_add_to_bag">Add To Bag</string>
+    <string name="btn_text_checkout">Checkout</string>
     <string name="dialog_btn_txt_add">ADD</string>
     <string name="dialog_btn_txt_cancel">Cancel</string>
     <string name="option_txt_size">Size:</string>

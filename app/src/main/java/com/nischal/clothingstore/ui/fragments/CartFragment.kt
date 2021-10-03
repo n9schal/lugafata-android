@@ -76,8 +76,8 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
             getString(R.string.text_cart_title)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         binding = null
     }
 }

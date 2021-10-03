@@ -14,8 +14,8 @@ class ProfileFragment: Fragment(R.layout.fragment_profile) {
         binding = FragmentProfileBinding.bind(view)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         binding = null
     }
 }
