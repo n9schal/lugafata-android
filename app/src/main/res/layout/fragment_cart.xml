@@ -69,9 +69,9 @@
             android:layout_marginEnd="2dp"
             android:text="@string/txt_currency"
             android:textColor="@color/black"
-            app:layout_constraintBottom_toBottomOf="@id/tvProductName"
+            app:layout_constraintBottom_toBottomOf="@id/tvTotal"
             app:layout_constraintEnd_toStartOf="@id/tvProductPrice"
-            app:layout_constraintTop_toTopOf="@id/tvProductName" />
+            app:layout_constraintTop_toTopOf="@id/tvTotal" />
 
         <TextView
             android:id="@+id/tvProductPrice"
@@ -79,13 +79,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            app:layout_constraintBottom_toBottomOf="@id/tvProductName"
+            app:layout_constraintBottom_toBottomOf="@id/tvTotal"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tvProductName"
+            app:layout_constraintTop_toTopOf="@id/tvTotal"
             tools:text="5000" />
 
         <TextView
-            android:id="@+id/tvProductName"
+            android:id="@+id/tvTotal"
             style="@style/TextAppearance.MaterialComponents.Subtitle2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
