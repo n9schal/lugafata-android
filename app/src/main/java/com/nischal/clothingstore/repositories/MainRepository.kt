@@ -16,10 +16,7 @@ import com.nischal.clothingstore.type.CollectionFilterParameter
 import com.nischal.clothingstore.type.CollectionListOptions
 import com.nischal.clothingstore.type.SearchInput
 import com.nischal.clothingstore.type.StringOperators
-import com.nischal.clothingstore.ui.models.Category
-import com.nischal.clothingstore.ui.models.HomeCategory
-import com.nischal.clothingstore.ui.models.Product
-import com.nischal.clothingstore.ui.models.ProductVariant
+import com.nischal.clothingstore.ui.models.*
 import com.nischal.clothingstore.utils.Constants
 import com.nischal.clothingstore.utils.Constants.ErrorHandlerMessages.GENERIC_ERROR_MESSAGE
 import com.nischal.clothingstore.utils.Constants.SlugConstants.CATEGORIES
@@ -168,6 +165,48 @@ class MainRepository(
                 if (searchResult.data != null) {
                     val productList = Product.parseToProductList(searchResult.data!!)
                     response.postValue(Resource.success(productList))
+                } else {
+                    throw ApolloException(GENERIC_ERROR_MESSAGE)
+                }
+            } catch (e: ApolloException) {
+                response.postValue(
+                    Resource.error(
+                        msg = e.message.toString(),
+                        data = null,
+                        title = APP_NAME
+                    )
+                )
+            }
+        }
+        return response
+    }
+
+    fun fetchSearchedProducts(
+        currentPage: Int,
+        pageSize: Int,
+        term: String
+    ): LiveData<Resource<SearchResponse>> {
+        val response = MutableLiveData<Resource<SearchResponse>>()
+        viewModelScope.launch {
+            try {
+                response.postValue(Resource.loading(null))
+                val skip = currentPage * pageSize
+                val searchInput = SearchInput(
+                    skip = Input.fromNullable(skip),
+                    take = Input.fromNullable(pageSize),
+                    term = Input.fromNullable(term),
+                    groupByProduct = Input.fromNullable(true)
+                )
+                val searchResult = apolloClient.query(
+                    SearchProductsQuery(searchInput = searchInput)
+                ).await()
+                if (searchResult.data != null) {
+                    val productList = Product.parseToProductList(searchResult.data!!)
+                    val searchResponse = SearchResponse(
+                        products = productList,
+                        facetValues = searchResult.data!!.search.facetValues
+                    )
+                    response.postValue(Resource.success(searchResponse))
                 } else {
                     throw ApolloException(GENERIC_ERROR_MESSAGE)
                 }

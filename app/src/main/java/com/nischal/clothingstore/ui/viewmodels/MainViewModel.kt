@@ -3,10 +3,7 @@ package com.nischal.clothingstore.ui.viewmodels
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import com.nischal.clothingstore.repositories.MainRepository
-import com.nischal.clothingstore.ui.models.Category
-import com.nischal.clothingstore.ui.models.HomeCategory
-import com.nischal.clothingstore.ui.models.Product
-import com.nischal.clothingstore.ui.models.ProductVariant
+import com.nischal.clothingstore.ui.models.*
 import com.nischal.clothingstore.utils.Resource
 import com.nischal.clothingstore.utils.SingleLiveEvent
 
@@ -16,6 +13,7 @@ class MainViewModel(
     val fetchHomePageContentsMediator = MediatorLiveData<Resource<ArrayList<HomeCategory>>>()
     val fetchCategoriesMediator = MediatorLiveData<Resource<ArrayList<Category>>>()
     val fetchSubCategoriesMediator = MediatorLiveData<Resource<ArrayList<Product>>>()
+    val fetchSearchedProductsMediator = MediatorLiveData<Resource<SearchResponse>>()
     val fetchProductDetailsMediator = MediatorLiveData<Resource<Product>>()
 
     val viewAllClickedEvent = SingleLiveEvent<HomeCategory>()
@@ -48,6 +46,22 @@ class MainViewModel(
             )
         ) {
             fetchSubCategoriesMediator.value = it
+        }
+    }
+
+    fun fetchSearchedProducts(
+        currentPage: Int,
+        pageSize: Int,
+        term: String
+    ) {
+        fetchSearchedProductsMediator.addSource(
+            mainRepository.fetchSearchedProducts(
+                currentPage,
+                pageSize,
+                term
+            )
+        ) {
+            fetchSearchedProductsMediator.value = it
         }
     }
 

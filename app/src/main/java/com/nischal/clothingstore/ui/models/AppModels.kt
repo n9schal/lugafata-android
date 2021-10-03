@@ -339,3 +339,8 @@ data class SubCategory(
     val subCategoryName: String = "",
     val image: Image = Image()
 )
+
+data class SearchResponse(
+    val products: ArrayList<Product> = arrayListOf(),
+    val facetValues: List<SearchProductsQuery.FacetValue>
+)

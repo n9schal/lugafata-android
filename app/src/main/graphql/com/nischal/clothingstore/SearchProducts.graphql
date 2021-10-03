@@ -1,6 +1,19 @@
 query SearchProducts($searchInput: SearchInput!) {
     search(input: $searchInput) {
         totalItems
+        facetValues {
+            count
+            facetValue {
+                id
+                name
+                code
+                facet {
+                    id
+                    name
+                    code
+                }
+            }
+        }
         items {
             sku
             slug

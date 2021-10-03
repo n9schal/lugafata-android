@@ -28,12 +28,14 @@
     <string name="text_toolbar_categories_title">Categories</string>
     <string name="text_toolbar_search_title">Search</string>
     <string name="text_cart_title">My Bag</string>
+    <string name="text_search_title">Search</string>
     <string name="txt_sold_out">Sold out</string>
     <string name="txt_currency">NRs </string>
     <string name="tab_text_men">Men</string>
     <string name="tab_text_women">Women</string>
     <string name="chip_text_all">All</string>
     <string name="text_empty_products">Sorry, we dont have any products of this category.</string>
+    <string name="text_empty_searched_products">Sorry, we could not find any products.</string>
     <string name="text_empty_cart">You have not added anything in your bag.</string>
     <string name="btn_text_add_to_bag">Add To Bag</string>
     <string name="dialog_btn_txt_add">ADD</string>

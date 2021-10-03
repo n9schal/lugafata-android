@@ -6,6 +6,87 @@
     android:layout_height="match_parent"
     tools:context=".ui.fragments.SearchFragment">
 
+    <include
+        android:id="@+id/includedToolbar"
+        layout="@layout/layout_toolbar_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/includedToolbar">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            app:singleLine="true">
+        </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSearchedProducts"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        tools:listitem="@layout/layout_products_item"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="2"
+        app:layout_constraintTop_toBottomOf="@id/horizontalScrollView"
+        app:layout_constraintBottom_toTopOf="@id/loadMoreProgress"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/tvEmptyProducts"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        style="@style/TextAppearance.MaterialComponents.Headline6"
+        android:textColor="@color/colorAccent"
+        android:textAlignment="center"
+        android:visibility="gone"
+        android:textSize="24sp"
+        android:text="@string/text_empty_searched_products"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/horizontalScrollView"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <ProgressBar
+        android:id="@+id/pbLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/horizontalScrollView"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <com.nischal.clothingstore.utils.viewUtils.DotProgressBar
+        android:id="@+id/loadMoreProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        app:amount="4"
+        app:animationDirection="right"
+        app:duration="@android:integer/config_shortAnimTime"
+        app:endColor="@color/colorPrimary"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rvSearchedProducts"
+        app:startColor="@color/colorPrimary" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

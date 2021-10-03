@@ -16,15 +16,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/ivIsFav"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:src="@drawable/ic_favorite"
-        app:layout_constraintBottom_toBottomOf="@id/tvPrice"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tvPrice" />
-
     <TextView
         android:id="@+id/tvCurency"
         style="@style/TextAppearance.MaterialComponents.Subtitle2"
