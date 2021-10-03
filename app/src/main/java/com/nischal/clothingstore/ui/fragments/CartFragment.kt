@@ -54,7 +54,7 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
             }
             binding?.clBottomSection?.visibility = View.VISIBLE
             binding?.tvEmptyProducts?.visibility = View.GONE
-            binding?.tvProductPrice?.text = total.toString()
+            binding?.tvTotalPrice?.text = total.toString()
         } else {
             binding?.clBottomSection?.visibility = View.GONE
             binding?.tvEmptyProducts?.visibility = View.VISIBLE
