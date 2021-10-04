@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nischal.clothingstore.R
 import com.nischal.clothingstore.databinding.FragmentCartBinding
@@ -23,6 +24,7 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
 
         setupToolbar()
         setupList()
+        setupViews()
         setupObservers()
     }
 
@@ -41,6 +43,12 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
             productDeleteClicked.observe(viewLifecycleOwner, Observer {
                 deleteShoppingListItemFromDb(it)
             })
+        }
+    }
+
+    private fun setupViews() {
+        binding?.btnCheckout?.setOnClickListener {
+            findNavController().navigate(R.id.action_cartFragment_to_checkoutFragment)
         }
     }
 

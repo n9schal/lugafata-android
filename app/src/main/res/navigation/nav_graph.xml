@@ -48,7 +48,15 @@
         android:id="@+id/cartFragment"
         android:name="com.nischal.clothingstore.ui.fragments.CartFragment"
         android:label="fragment_cart"
-        tools:layout="@layout/fragment_cart" />
+        tools:layout="@layout/fragment_cart" >
+        <action
+            android:id="@+id/action_cartFragment_to_checkoutFragment"
+            app:destination="@id/checkoutFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.nischal.clothingstore.ui.fragments.ProfileFragment"
@@ -82,4 +90,9 @@
             android:name="product"
             app:argType="com.nischal.clothingstore.ui.models.Product" />
     </fragment>
+    <fragment
+        android:id="@+id/checkoutFragment"
+        android:name="com.nischal.clothingstore.ui.fragments.CheckoutFragment"
+        android:label="fragment_checkout"
+        tools:layout="@layout/fragment_checkout" />
 </navigation>
