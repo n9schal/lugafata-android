@@ -87,7 +87,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilPaymentOption"
+                android:id="@+id/tilPaymentOptions"
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
                 android:layout_width="0dp"
                 app:boxStrokeWidth="0dp"
@@ -102,7 +102,7 @@
                 app:layout_constraintTop_toBottomOf="@id/tvPaymentOption">
 
                 <AutoCompleteTextView
-                    android:id="@+id/etOptionSize"
+                    android:id="@+id/etPaymentOptions"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none" />
