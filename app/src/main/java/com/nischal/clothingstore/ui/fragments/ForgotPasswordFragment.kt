@@ -53,7 +53,7 @@ class ForgotPasswordFragment : Fragment(R.layout.fragment_forgot_password) {
                         (requireActivity() as AuthActivity).hideLoading()
                         Toast.makeText(
                             requireContext(),
-                            "Password reset link sent successfully.",
+                            "Password reset link sent successfully. Please check your email.",
                             Toast.LENGTH_SHORT
                         ).show()
                         requireActivity().onBackPressed()
@@ -76,7 +76,7 @@ class ForgotPasswordFragment : Fragment(R.layout.fragment_forgot_password) {
             authViewModel.requestPasswordReset(binding?.etEmail?.text.toString())
         }
         binding?.btnBackToLogin?.setOnClickListener {
-            findNavController().navigate(R.id.action_forgotPasswordFragment_to_loginFragment)
+            requireActivity().onBackPressed()
         }
     }
 
