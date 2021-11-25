@@ -7,12 +7,116 @@
     tools:context=".ui.fragments.ProfileFragment">
 
     <TextView
+        android:id="@+id/tvMyProfile"
+        style="@style/HeaderTextViewStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Profile Fragment"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="64dp"
+        android:text="@string/text_title_my_profile"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvFullName"
+        style="@style/TextAppearance.MaterialComponents.Headline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvMyProfile"
+        tools:text="John Doe" />
+
+    <TextView
+        android:id="@+id/tvEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="example@email.com"
+        android:layout_marginTop="4dp"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@id/tvFullName"
+        app:layout_constraintTop_toBottomOf="@id/tvFullName"/>
+
+    <View
+        android:id="@+id/viewSeperator0"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorGrayLight"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toBottomOf="@id/tvEmail"/>
+
+    <include
+        android:id="@+id/includedMyOrders"
+        layout="@layout/layout_profile_option_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/viewSeperator0"/>
+
+    <View
+        android:id="@+id/viewSeperator1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorGrayLight"
+        app:layout_constraintTop_toBottomOf="@id/includedMyOrders"/>
+
+    <include
+        android:id="@+id/includedEditProfile"
+        layout="@layout/layout_profile_option_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/viewSeperator1"/>
+
+    <View
+        android:id="@+id/viewSeperator2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorGrayLight"
+        app:layout_constraintTop_toBottomOf="@id/includedEditProfile"/>
+
+    <include
+        android:id="@+id/includedChangePassword"
+        layout="@layout/layout_profile_option_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/viewSeperator2"/>
+
+    <View
+        android:id="@+id/viewSeperator3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorGrayLight"
+        app:layout_constraintTop_toBottomOf="@id/includedChangePassword"/>
+
+    <include
+        android:id="@+id/includedAbout"
+        layout="@layout/layout_profile_option_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/viewSeperator3"/>
+
+    <View
+        android:id="@+id/viewSeperator4"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorGrayLight"
+        app:layout_constraintTop_toBottomOf="@id/includedAbout"/>
+
+    <include
+        android:id="@+id/includedLogout"
+        layout="@layout/layout_profile_option_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/viewSeperator4"/>
+
+    <View
+        android:id="@+id/viewSeperator5"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorGrayLight"
+        app:layout_constraintTop_toBottomOf="@id/includedLogout"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,7 +16,7 @@
     <string name="btn_text_don_t_have_an_account_sign_up">Don\'t have an account? Sign up.</string>
     <string name="text_forgot_password">Forgot Password</string>
     <string name="text_forgot_password_description">Please, enter your email address. You will receive a link to create a new password via email.</string>
-    <string name="btn_text_send">Send</string>
+    <string name="btn_text_send_link">Send Link</string>
     <string name="btn_text_back_to_login">Back to Login</string>
     <string name="bn_home_title">Home</string>
     <string name="bn_categories_title">Categories</string>
@@ -50,7 +50,14 @@
     <string name="txt_delivery">Delivery:</string>
     <string name="txt_order">Order:</string>
     <string name="text_shipping_address">Shipping Address</string>
-    <string name="text_change">Change</string>
     <string name="text_hint_street_name_city">Street name, City</string>
     <string name="text_hint_extra_notes_optional">Extra notes (optional)</string>
+    <string name="text_title_my_profile">My Profile</string>
+    <string name="option_title_text_my_orders">My Orders</string>
+    <string name="option_title_text_edit_profile">Edit Profile</string>
+    <string name="option_title_text_change_password">Change Password</string>
+    <string name="option_title_text_about">About</string>
+    <string name="option_title_text_logout">Logout</string>
+    <string name="not_logged_in_message">You are not logged in. Please login/signup to view your profile.</string>
+    <string name="btn_text_skip_for_now">Skip for now</string>
 </resources>

@@ -135,6 +135,10 @@ class LoginFragment: Fragment(R.layout.fragment_login) {
             )
             authViewModel.loginMutation(loginRequest)
         }
+        binding?.btnSkip?.setOnClickListener {
+            startActivity(MainActivity.getInstance(requireContext()))
+            requireActivity().finishAffinity()
+        }
     }
 
     override fun onDestroyView() {
