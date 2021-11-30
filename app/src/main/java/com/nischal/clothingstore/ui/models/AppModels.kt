@@ -331,6 +331,39 @@ data class Category(
     }
 }
 
+data class OrderDetails(
+    var id: String = "",
+    var orderNumber: String = "",
+    var productList: List<Product> = arrayListOf(),
+    var subTotal: Int = 0,
+    var deliveryCharge: Int = 0,
+    var total: Int = 0,
+    var deliveryLocation: Location? = null,
+    var deliveryNote: String = "",
+    var paymentOption: PaymentOption? = null,
+    val createdAt: String = "",
+    val completedDate: String? = null,
+    var vendureOrderState: String = "",
+    val status: Int = 0,
+    var createdBy: String = "",
+    var phoneNumber: String = "",
+    var assignedTo: String = ""
+) : Serializable {
+    companion object {
+
+    }
+}
+
+data class PaymentOption(
+    val paymentName: String = "",
+    var isSelected: Boolean = false
+) {
+    companion object {
+        fun getPaymentOptions() = arrayListOf(
+            PaymentOption(Constants.PaymentOptions.CASH_ON_DELIVERY, true)
+        )
+    }
+}
 
 data class SubCategory(
     val subCategoryId: String = "",
@@ -343,4 +376,14 @@ data class SubCategory(
 data class SearchResponse(
     val products: ArrayList<Product> = arrayListOf(),
     val facetValues: List<SearchProductsQuery.FacetValue>
+)
+
+data class Location(
+    var savedLocationName: String = "",
+    var streetLine1: String = "",
+    var city: String = "",
+    var countryCode: String = "NP",
+    var lat: Double = 0.0,
+    var lng: Double = 0.0,
+    var isSelected: Boolean = false
 )

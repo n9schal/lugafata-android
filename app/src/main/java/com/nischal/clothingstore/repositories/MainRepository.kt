@@ -6,21 +6,18 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.coroutines.await
 import com.apollographql.apollo.exception.ApolloException
-import com.nischal.clothingstore.CategoryCollectionsQuery
-import com.nischal.clothingstore.HomePageCollectionsQuery
-import com.nischal.clothingstore.ProductQuery
-import com.nischal.clothingstore.SearchProductsQuery
+import com.nischal.clothingstore.*
 import com.nischal.clothingstore.data.db.dao.ShoppingListDao
 import com.nischal.clothingstore.data.prefs.PrefsManager
-import com.nischal.clothingstore.type.CollectionFilterParameter
-import com.nischal.clothingstore.type.CollectionListOptions
-import com.nischal.clothingstore.type.SearchInput
-import com.nischal.clothingstore.type.StringOperators
+import com.nischal.clothingstore.type.*
 import com.nischal.clothingstore.ui.models.*
 import com.nischal.clothingstore.utils.Constants
 import com.nischal.clothingstore.utils.Constants.ErrorHandlerMessages.GENERIC_ERROR_MESSAGE
 import com.nischal.clothingstore.utils.Constants.SlugConstants.CATEGORIES
 import com.nischal.clothingstore.utils.Constants.Strings.APP_NAME
+import com.nischal.clothingstore.utils.Constants.VendureOrderStates.ADDING_ITEMS
+import com.nischal.clothingstore.utils.Constants.VendureOrderStates.ARRANGING_PAYMENT
+import com.nischal.clothingstore.utils.Constants.VendurePaymentMethods.PAYMENT_ON_DELIVERY
 import com.nischal.clothingstore.utils.Resource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -254,6 +251,220 @@ class MainRepository(
             }
         }
         return response
+    }
+
+    /**
+     * ============================================================================================================
+     * Order related operations
+     * ============================================================================================================
+     * */
+
+    fun activeOrderQuery(): LiveData<Resource<ActiveOrderQuery.ActiveOrder>> {
+        val response = MutableLiveData<Resource<ActiveOrderQuery.ActiveOrder>>()
+        viewModelScope.launch {
+            try {
+                response.postValue(Resource.loading(null))
+                val result =
+                    apolloClient.query(ActiveOrderQuery()).await()
+                response.postValue(Resource.success(result.data?.activeOrder))
+            } catch (e: ApolloException) {
+                response.postValue(
+                    Resource.error(
+                        msg = e.message.toString(),
+                        data = null,
+                        title = APP_NAME
+                    )
+                )
+            }
+        }
+        return response
+    }
+
+    fun proceedToCheckoutOperation(
+        shoppingCartItems: ArrayList<ProductVariant>
+    ): LiveData<Resource<Any?>> {
+        val response = MutableLiveData<Resource<Any?>>()
+        viewModelScope.launch {
+            try {
+                response.postValue(Resource.loading(null))
+                val activeOrderQueryResult =
+                    apolloClient.query(ActiveOrderQuery()).await()
+                // * if active order is null, just start placing orders
+                if (activeOrderQueryResult.data?.activeOrder == null) {
+                    addItemsToOrder(shoppingCartItems)
+                }
+                activeOrderQueryResult.data?.activeOrder?.let {
+                    when (it.state) {
+                        ADDING_ITEMS -> {
+                            // * clear out previously added orderlines first
+                            removeAllOrderLines()
+                            // * then, add items to order
+                            addItemsToOrder(shoppingCartItems)
+                        }
+                        ARRANGING_PAYMENT -> {
+                            // * first transition to Adding items state
+                            transitionOrderState(ADDING_ITEMS)
+                            // * clear out previously added orderlines first
+                            removeAllOrderLines()
+                            // * then, add items to order
+                            addItemsToOrder(shoppingCartItems)
+                        }
+                    }
+                }
+                response.postValue(Resource.success(null))
+            } catch (e: ApolloException) {
+                response.postValue(
+                    Resource.error(
+                        msg = e.message.toString(),
+                        data = null,
+                        title = APP_NAME
+                    )
+                )
+            }
+        }
+        return response
+    }
+
+    fun placeOrderOperation(orderDetails: OrderDetails): LiveData<Resource<Any?>> {
+        val response = MutableLiveData<Resource<Any?>>()
+        viewModelScope.launch {
+            try {
+                response.postValue(Resource.loading(null))
+                when (orderDetails.vendureOrderState) {
+                    ADDING_ITEMS -> {
+                        // * change state to ARRANGING_PAYMENT first
+                        transitionOrderState(ARRANGING_PAYMENT)
+                        // * set shipping address
+                        setOrderShippingAddress(orderDetails.deliveryLocation!!)
+                        // * then add payment method
+                        addPaymentToOrder()
+                    }
+                    ARRANGING_PAYMENT -> {
+                        // * set shipping address
+                        setOrderShippingAddress(orderDetails.deliveryLocation!!)
+                        // * then add payment method
+                        addPaymentToOrder()
+                    }
+                }
+                response.postValue(Resource.success(null))
+            } catch (e: ApolloException) {
+                response.postValue(
+                    Resource.error(
+                        msg = e.message.toString(),
+                        data = null,
+                        title = APP_NAME
+                    )
+                )
+            }
+        }
+        return response
+    }
+
+    /**
+     * method that adds items to order
+     * @param
+     * */
+    private suspend fun addItemsToOrder(
+        shoppingCartItems: ArrayList<ProductVariant>
+    ){
+        shoppingCartItems.forEach { productVariant ->
+            val result = apolloClient.mutate(
+                AddItemToOrderMutation(
+                    productVariantId = productVariant.productVariantId,
+                    quantity = productVariant.qtyInCart
+                )
+            ).await()
+
+            result.data?.addItemToOrder?.asOrderModificationError?.let {
+                throw ApolloException(it.message)
+            }
+            result.data?.addItemToOrder?.asNegativeQuantityError?.let {
+                throw ApolloException(it.message)
+            }
+            result.data?.addItemToOrder?.asOrderLimitError?.let {
+                throw ApolloException(it.message)
+            }
+            result.data?.addItemToOrder?.asInsufficientStockError?.let {
+                // * update shoppinglist with available stock
+                if (it.quantityAvailable > 0) {
+                    productVariant.qtyInCart = it.quantityAvailable
+                    shoppingListDao.upsert(productVariant)
+                }
+                throw ApolloException(it.message)
+            }
+            result.data?.addItemToOrder?.asOrder?.let {
+                // todo do some operation if needed
+            }
+        }
+    }
+
+    private suspend fun removeAllOrderLines() {
+        val result =
+            apolloClient.mutate(RemoveAllOrderLinesMutation()).await()
+        result.data?.removeAllOrderLines?.asOrderModificationError?.let {
+            throw ApolloException(it.message)
+        }
+        if (result.data?.removeAllOrderLines?.asOrder == null) {
+            throw ApolloException("Something went wrong!")
+        }
+    }
+
+    private suspend fun transitionOrderState(state: String) {
+        val result =
+            apolloClient.mutate(TransitionOrderToStateMutation(state = state)).await()
+        result.data?.transitionOrderToState?.asOrderStateTransitionError?.let {
+            throw ApolloException(it.message)
+        }
+        if (result.data?.transitionOrderToState?.asOrder == null) {
+            throw ApolloException("Something went wrong!")
+        }
+    }
+
+    private suspend fun setOrderShippingAddress(location: Location) {
+        val input = CreateAddressInput(
+            streetLine1 = location.streetLine1,
+            city = Input.fromNullable(location.city),
+            countryCode = "NP"
+        )
+
+        val result =
+            apolloClient.mutate(SetOrderShippingAddressMutation(input = input)).await()
+
+        result.data?.setOrderShippingAddress?.asNoActiveOrderError?.let {
+            throw ApolloException(it.message)
+        }
+        result.data?.setOrderShippingAddress?.asOrder?.let {
+            //todo do some operation if need be
+        }
+    }
+
+    private suspend fun addPaymentToOrder() {
+        val input = PaymentInput(
+            method = PAYMENT_ON_DELIVERY,
+            metadata = ""
+        )
+        val result = apolloClient.mutate(AddPaymentToOrderMutation(input = input)).await()
+        result.data?.addPaymentToOrder?.asOrderPaymentStateError?.let {
+            throw ApolloException(it.message)
+        }
+        result.data?.addPaymentToOrder?.asIneligiblePaymentMethodError?.let {
+            throw ApolloException(it.message)
+        }
+        result.data?.addPaymentToOrder?.asPaymentFailedError?.let {
+            throw ApolloException(it.message)
+        }
+        result.data?.addPaymentToOrder?.asPaymentDeclinedError?.let {
+            throw ApolloException(it.message)
+        }
+        result.data?.addPaymentToOrder?.asOrderStateTransitionError?.let {
+            throw ApolloException(it.message)
+        }
+        result.data?.addPaymentToOrder?.asNoActiveOrderError?.let {
+            throw ApolloException(it.message)
+        }
+        result.data?.addPaymentToOrder?.asOrder?.let {
+            //todo do some operation if need be
+        }
     }
 
     /**

@@ -57,6 +57,15 @@ class Constants {
         const val CANCELLED = "Cancelled"
     }
 
+    object PaymentOptions{
+        const val CASH_ON_DELIVERY = "Payment on delivery"
+        const val ESEWA = "eSewa"
+    }
+
+    object VendurePaymentMethods{
+        const val PAYMENT_ON_DELIVERY = "payment-on-delivery"
+    }
+
     object ErrorHandlerMessages{
         const val GENERIC_ERROR_MESSAGE = "Oops! Something went wrong!"
     }
