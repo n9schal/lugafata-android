@@ -1,0 +1,43 @@
+mutation TransitionOrderToState($state: String!) {
+    transitionOrderToState(state: $state) {
+        ... on OrderStateTransitionError {
+            errorCode
+            message
+            transitionError
+            fromState
+            toState
+        }
+        ... on Order {
+            id
+            code
+            state
+            active
+            shippingAddress {
+                streetLine1
+                city
+                countryCode
+            }
+            lines {
+                id
+                quantity
+                productVariant {
+                    id
+                    product {
+                        id
+                        name
+                        description
+                    }
+                    createdAt
+                    updatedAt
+                    sku
+                    name
+                    featuredAsset {
+                        source
+                    }
+                    priceWithTax
+                    stockLevel
+                }
+            }
+        }
+    }
+}

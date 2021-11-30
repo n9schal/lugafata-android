@@ -1,0 +1,35 @@
+mutation RemoveAllOrderLines {
+    removeAllOrderLines {
+        ... on OrderModificationError {
+            errorCode
+            message
+        }
+        ... on Order {
+            id
+            code
+            state
+            active
+            lines {
+                id
+                quantity
+                productVariant {
+                    id
+                    product {
+                        id
+                        name
+                        description
+                    }
+                    createdAt
+                    updatedAt
+                    sku
+                    name
+                    featuredAsset {
+                        source
+                    }
+                    priceWithTax
+                    stockLevel
+                }
+            }
+        }
+    }
+}

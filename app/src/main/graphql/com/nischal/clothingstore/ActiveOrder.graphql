@@ -1,0 +1,40 @@
+query ActiveOrder{
+    activeOrder {
+        id
+        code
+        state
+        active
+        subTotalWithTax
+        shippingWithTax
+        totalWithTax
+        shippingAddress {
+            streetLine1
+            city
+            countryCode
+        }
+        lines {
+            id
+            quantity
+            productVariant {
+                id
+                product {
+                    id
+                    name
+                    description
+                    facetValues {
+                        id
+                    }
+                }
+                createdAt
+                updatedAt
+                sku
+                name
+                featuredAsset {
+                    source
+                }
+                priceWithTax
+                stockLevel
+            }
+        }
+    }
+}

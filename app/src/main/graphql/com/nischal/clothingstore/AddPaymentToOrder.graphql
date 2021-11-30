@@ -1,0 +1,66 @@
+mutation AddPaymentToOrder($input: PaymentInput!) {
+    addPaymentToOrder(input: $input) {
+        ... on Order {
+            id
+            code
+            state
+            active
+            shippingAddress {
+                streetLine1
+                city
+                countryCode
+            }
+            lines {
+                id
+                quantity
+                productVariant {
+                    id
+                    product {
+                        id
+                        name
+                        description
+                    }
+                    createdAt
+                    updatedAt
+                    sku
+                    name
+                    featuredAsset {
+                        source
+                    }
+                    priceWithTax
+                    stockLevel
+                }
+            }
+        }
+        ... on OrderPaymentStateError {
+            errorCode
+            message
+        }
+        ... on IneligiblePaymentMethodError {
+            errorCode
+            message
+            eligibilityCheckerMessage
+        }
+        ... on PaymentFailedError {
+            errorCode
+            message
+            paymentErrorMessage
+        }
+        ... on PaymentDeclinedError {
+            errorCode
+            message
+            paymentErrorMessage
+        }
+        ... on OrderStateTransitionError {
+            errorCode
+            message
+            transitionError
+            fromState
+            toState
+        }
+        ... on NoActiveOrderError {
+            errorCode
+            message
+        }
+    }
+}

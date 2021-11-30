@@ -1,0 +1,40 @@
+mutation SetOrderShippingAddress($input: CreateAddressInput!) {
+    setOrderShippingAddress(input: $input) {
+        ... on NoActiveOrderError {
+            errorCode
+            message
+        }
+        ... on Order {
+            id
+            code
+            state
+            active
+            shippingAddress {
+                streetLine1
+                city
+                countryCode
+            }
+            lines {
+                id
+                quantity
+                productVariant {
+                    id
+                    product {
+                        id
+                        name
+                        description
+                    }
+                    createdAt
+                    updatedAt
+                    sku
+                    name
+                    featuredAsset {
+                        source
+                    }
+                    priceWithTax
+                    stockLevel
+                }
+            }
+        }
+    }
+}
