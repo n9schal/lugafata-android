@@ -21,6 +21,7 @@ class AuthViewModel(
     var registerCustomerAccountMutationMediator = MediatorLiveData<Resource<LoginRequest>>()
     var loginMutationMediator = MediatorLiveData<Resource<LoginMutation.Data>>()
     var requestPasswordResetMediator = MediatorLiveData<Resource<Any?>>()
+    var logoutMutationMediator = MediatorLiveData<Resource<Boolean>>()
 
     val alertDialogEvent = SingleLiveEvent<AlertMessage>()
 
@@ -57,6 +58,12 @@ class AuthViewModel(
     fun activeCustomer() {
         activeCustomerQueryMediator.addSource(authRepository.activeCustomerQuery()) {
             activeCustomerQueryMediator.value = it
+        }
+    }
+
+    fun logoutMutation() {
+        logoutMutationMediator.addSource(authRepository.logoutMutation()) {
+            logoutMutationMediator.value = it
         }
     }
 

@@ -10,7 +10,7 @@ import org.koin.dsl.module.module
 
 val repositoryModule = module {
     factory { provideMainRepository(get(), get(), get(), get()) }
-    factory { provideAuthRepository(get(), get(), get()) }
+    factory { provideAuthRepository(get(), get(), get(), get()) }
 }
 
 fun provideMainRepository(
@@ -30,11 +30,13 @@ fun provideMainRepository(
 fun provideAuthRepository(
     prefsManager: PrefsManager,
     viewModelScope: CoroutineScope,
-    apolloClient: ApolloClient
+    apolloClient: ApolloClient,
+    shoppingListDao: ShoppingListDao
 ): AuthRepository{
     return AuthRepository(
         prefsManager,
         viewModelScope,
-        apolloClient
+        apolloClient,
+        shoppingListDao
     )
 }

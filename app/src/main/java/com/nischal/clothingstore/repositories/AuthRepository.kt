@@ -9,10 +9,8 @@ import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.coroutines.await
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.http.OkHttpExecutionContext
-import com.nischal.clothingstore.ActiveCustomerQuery
-import com.nischal.clothingstore.LoginMutation
-import com.nischal.clothingstore.RegisterCustomerAccountMutation
-import com.nischal.clothingstore.RequestPasswordResetMutation
+import com.nischal.clothingstore.*
+import com.nischal.clothingstore.data.db.dao.ShoppingListDao
 import com.nischal.clothingstore.data.prefs.PrefsManager
 import com.nischal.clothingstore.type.*
 import com.nischal.clothingstore.ui.models.LoginRequest
@@ -28,7 +26,8 @@ import kotlinx.coroutines.launch
 class AuthRepository(
     private val prefsManager: PrefsManager,
     private val viewModelScope: CoroutineScope,
-    private val apolloClient: ApolloClient
+    private val apolloClient: ApolloClient,
+    private val shoppingListDao: ShoppingListDao
 ) {
     fun activeCustomerQuery(): LiveData<Resource<ActiveCustomerQuery.Data>> {
         val response = MediatorLiveData<Resource<ActiveCustomerQuery.Data>>()
@@ -208,6 +207,37 @@ class AuthRepository(
                 }
                 result.data?.requestPasswordReset?.asSuccess?.let {
                     response.postValue(Resource.success(null))
+                }
+            } catch (e: ApolloException) {
+                response.postValue(
+                    Resource.error(
+                        msg = e.message.toString(),
+                        data = null,
+                        title = APP_NAME
+                    )
+                )
+            }
+        }
+        return response
+    }
+
+    fun logoutMutation(): LiveData<Resource<Boolean>> {
+        val response = MutableLiveData<Resource<Boolean>>()
+        viewModelScope.launch {
+            try {
+                response.postValue(Resource.loading(null))
+                val result = apolloClient.mutate(LogoutMutation()).await()
+                if (result.data == null) {
+                    throw ApolloException(GENERIC_ERROR_MESSAGE)
+                }
+                result.data?.let {
+                    if (it.logout.success) {
+                        prefsManager.clearData()
+                        shoppingListDao.deleteAllShoppingList()
+                        response.postValue(Resource.success(it.logout.success))
+                    } else {
+                        throw ApolloException(GENERIC_ERROR_MESSAGE)
+                    }
                 }
             } catch (e: ApolloException) {
                 response.postValue(

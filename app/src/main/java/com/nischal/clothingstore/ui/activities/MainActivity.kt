@@ -1,5 +1,6 @@
 package com.nischal.clothingstore.ui.activities
 
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -10,11 +11,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.nischal.clothingstore.R
 import com.nischal.clothingstore.databinding.ActivityMainBinding
+import com.nischal.clothingstore.utils.viewUtils.ProgressDialogHelper
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     lateinit var navController: NavController
+    private var progressDialog: Dialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +35,16 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    fun hideLoading() {
+        if (progressDialog != null)
+            progressDialog!!.dismiss()
+    }
+
+    fun showLoading(message: String) {
+        progressDialog = ProgressDialogHelper.progressDialog(this, message)
+        progressDialog!!.show()
     }
 
     companion object {

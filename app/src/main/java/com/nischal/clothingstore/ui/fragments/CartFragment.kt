@@ -8,9 +8,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nischal.clothingstore.R
 import com.nischal.clothingstore.databinding.FragmentCartBinding
+import com.nischal.clothingstore.ui.activities.AuthActivity
 import com.nischal.clothingstore.ui.adapters.CartAdapter
 import com.nischal.clothingstore.ui.models.ProductVariant
 import com.nischal.clothingstore.ui.viewmodels.MainViewModel
+import com.nischal.clothingstore.utils.extensions.showCustomAlertDialog
+import kotlinx.android.synthetic.main.fragment_login.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CartFragment : Fragment(R.layout.fragment_cart) {
@@ -48,7 +51,16 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
 
     private fun setupViews() {
         binding?.btnCheckout?.setOnClickListener {
-            findNavController().navigate(R.id.action_cartFragment_to_checkoutFragment)
+            if (mainViewModel.isUserLoggedIn()) {
+                findNavController().navigate(R.id.action_cartFragment_to_checkoutFragment)
+            } else {
+                requireActivity().showCustomAlertDialog(
+                    context = requireActivity(),
+                    message = getString(R.string.not_logged_in_message),
+                    positiveBtnClicked = {
+                        startActivity(AuthActivity.getInstance(requireContext()))
+                    })
+            }
         }
     }
 
