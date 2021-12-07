@@ -20,7 +20,6 @@ import com.nischal.clothingstore.utils.Constants.VendureOrderStates.ARRANGING_PA
 import com.nischal.clothingstore.utils.Constants.VendurePaymentMethods.PAYMENT_ON_DELIVERY
 import com.nischal.clothingstore.utils.Resource
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainRepository(
@@ -337,13 +336,13 @@ class MainRepository(
                         // * set shipping address
                         setOrderShippingAddress(orderDetails.deliveryLocation!!)
                         // * then add payment method
-                        addPaymentToOrder()
+                        addPaymentMethodToOrder()
                     }
                     ARRANGING_PAYMENT -> {
                         // * set shipping address
                         setOrderShippingAddress(orderDetails.deliveryLocation!!)
                         // * then add payment method
-                        addPaymentToOrder()
+                        addPaymentMethodToOrder()
                     }
                 }
                 response.postValue(Resource.success(null))
@@ -422,7 +421,7 @@ class MainRepository(
 
     private suspend fun setOrderShippingAddress(location: Location) {
         val input = CreateAddressInput(
-            streetLine1 = location.streetLine1,
+            streetLine1 = location.savedLocationName,
             city = Input.fromNullable(location.city),
             countryCode = "NP"
         )
@@ -438,7 +437,7 @@ class MainRepository(
         }
     }
 
-    private suspend fun addPaymentToOrder() {
+    private suspend fun addPaymentMethodToOrder() {
         val input = PaymentInput(
             method = PAYMENT_ON_DELIVERY,
             metadata = ""

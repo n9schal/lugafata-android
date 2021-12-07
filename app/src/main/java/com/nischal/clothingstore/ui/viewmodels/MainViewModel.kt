@@ -15,6 +15,7 @@ class MainViewModel(
     val fetchSubCategoriesMediator = MediatorLiveData<Resource<ArrayList<Product>>>()
     val fetchSearchedProductsMediator = MediatorLiveData<Resource<SearchResponse>>()
     val fetchProductDetailsMediator = MediatorLiveData<Resource<Product>>()
+    var proceedToCheckoutOperationMediator = MediatorLiveData<Resource<Any?>>()
 
     val viewAllClickedEvent = SingleLiveEvent<HomeCategory>()
     val categoryClickedEvent = SingleLiveEvent<Category>()
@@ -76,6 +77,18 @@ class MainViewModel(
             )
         ) {
             fetchProductDetailsMediator.value = it
+        }
+    }
+
+    fun proceedToCheckoutOperation(
+        shoppingCartItems: ArrayList<ProductVariant>
+    ) {
+        proceedToCheckoutOperationMediator.addSource(
+            mainRepository.proceedToCheckoutOperation(
+                shoppingCartItems
+            )
+        ) {
+            proceedToCheckoutOperationMediator.value = it
         }
     }
 

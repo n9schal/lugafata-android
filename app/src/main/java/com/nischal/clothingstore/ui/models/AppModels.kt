@@ -73,6 +73,19 @@ data class ProductVariant(
     val options: List<Option> = listOf()
 ) : Serializable {
     companion object {
+
+        /**
+         * removes 2 digits from LSB as in price
+         * @param price int value
+         * @return int after removing trailing zeros
+         * */
+        fun removeTrailingZeroInPrice(price: Int) = price / 100
+
+        /**
+         * parse active order query results to list of [ProductVariant]
+         * @param data active order fetch result [ProductQuery.Variant]
+         * @return ArrayList of [ProductVariant]
+         * */
         fun parseToProductVariants(data: ArrayList<ProductQuery.Variant>): ArrayList<ProductVariant> {
             val productVariants = arrayListOf<ProductVariant>()
             data.forEach { variant ->
@@ -110,6 +123,57 @@ data class ProductVariant(
                     options = options
                 )
                 productVariants.add(tempVariant)
+            }
+            return productVariants
+        }
+
+        /**
+         * parse active order query results to list of [ProductVariant]
+         * @param data active order fetch result [ActiveOrderQuery.ActiveOrder]
+         * @return ArrayList of [ProductVariant]
+         * */
+        fun parseToProductVariants(data: ActiveOrderQuery.ActiveOrder): ArrayList<ProductVariant> {
+            val productVariants = arrayListOf<ProductVariant>()
+            data.lines.forEach { orderline ->
+                val imageUrl = if (orderline.productVariant.featuredAsset != null) {
+                    orderline.productVariant.featuredAsset.source
+                } else {
+                    ""
+                }
+                // * get facet value ids
+                val facetValueIds: ArrayList<String> = arrayListOf()
+                orderline.productVariant.product.facetValues.forEach { facetValue ->
+                    facetValueIds.add(facetValue.id)
+                }
+
+                // * add options
+                val options = arrayListOf<Option>()
+                orderline.productVariant.options.forEach { option ->
+                    options.add(
+                        Option(
+                            optionId = option.id,
+                            optionCode = option.code,
+                            optionName = option.name
+                        )
+                    )
+                }
+                // * map to product model
+                val productVariant = ProductVariant(
+                    productVariantId = orderline.productVariant.id,
+                    createdAt = orderline.productVariant.createdAt.toString(),
+                    updatedAt = orderline.productVariant.updatedAt.toString(),
+                    productVariantStockLevel = orderline.productVariant.stockLevel,
+                    qtyInCart = orderline.quantity,
+                    productVariantDescription = orderline.productVariant.product.description,
+                    productVariantName = orderline.productVariant.name,
+                    productVariantFeaturedAsset = Image(src = imageUrl),
+                    productVariantPrice = removeTrailingZeroInPrice(
+                        orderline.productVariant.priceWithTax
+                    ),
+                    facetValueIds = facetValueIds,
+                    options = options
+                )
+                productVariants.add(productVariant)
             }
             return productVariants
         }
@@ -334,12 +398,11 @@ data class Category(
 data class OrderDetails(
     var id: String = "",
     var orderNumber: String = "",
-    var productList: List<Product> = arrayListOf(),
+    var productVariantList: List<ProductVariant> = arrayListOf(),
     var subTotal: Int = 0,
     var deliveryCharge: Int = 0,
     var total: Int = 0,
     var deliveryLocation: Location? = null,
-    var deliveryNote: String = "",
     var paymentOption: PaymentOption? = null,
     val createdAt: String = "",
     val completedDate: String? = null,
@@ -350,7 +413,17 @@ data class OrderDetails(
     var assignedTo: String = ""
 ) : Serializable {
     companion object {
-
+        fun parseToOrderDetail(activeOrder: ActiveOrderQuery.ActiveOrder): OrderDetails {
+            return OrderDetails(
+                id = activeOrder.id,
+                orderNumber = activeOrder.code,
+                vendureOrderState = activeOrder.state,
+                productVariantList = ProductVariant.parseToProductVariants(activeOrder),
+                subTotal = activeOrder.subTotalWithTax / 100,
+                deliveryCharge = activeOrder.shippingWithTax / 100,
+                total = activeOrder.totalWithTax / 100
+            )
+        }
     }
 }
 
@@ -380,6 +453,7 @@ data class SearchResponse(
 
 data class Location(
     var savedLocationName: String = "",
+    var extraNote: String = "",
     var streetLine1: String = "",
     var city: String = "",
     var countryCode: String = "NP",

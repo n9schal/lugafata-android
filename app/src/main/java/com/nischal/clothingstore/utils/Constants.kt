@@ -16,6 +16,9 @@ class Constants {
         const val ERR_INVALID_EMAIL = "Please provide valid email address."
         const val ERR_INVALID_PASSWORD = "Password has to be minimum 6 characters long."
         const val ERR_INVALID_REPASSWORD = "Passwords do not match."
+
+        const val EMPTY_DELIVERY_LOCATION = "Please select a delivery location before proceeding."
+        const val EMPTY_PAYMENT_OPTION = "Please select a payment option before proceeding."
     }
 
     object ValidationTitle {

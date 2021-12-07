@@ -5,8 +5,10 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.snackbar.Snackbar
 import com.nischal.clothingstore.R
 import com.nischal.clothingstore.databinding.FragmentHomeBinding
 import com.nischal.clothingstore.ui.activities.MainActivity
@@ -20,6 +22,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class HomeFragment : Fragment(R.layout.fragment_home) {
     private var binding: FragmentHomeBinding? = null
     private val mainViewModel: MainViewModel by viewModel()
+    private val args: HomeFragmentArgs by navArgs()
     private lateinit var homeCategoriesAdapter: HomeCategoriesAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -27,6 +30,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         binding = FragmentHomeBinding.bind(view)
 
         setupToolbar()
+
+        if (args.isFromCheckoutPage) {
+            showSnackBar(view)
+        }
         setupLists()
         setupObservers()
         fetchData()
@@ -122,6 +129,17 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         } else {
             binding?.tvTitle?.text = getString(R.string.text_toolbar_home_title)
         }
+    }
+
+    private fun showSnackBar(view: View) {
+        Snackbar.make(view, "Your order has been placed successfully.", Snackbar.LENGTH_LONG)
+            .apply {
+                setAction("View Orders") {
+                    // todo navigate to my orders
+//                    findNavController().navigate(R.id.action_homeFragment_to_orderTrackingFragment)
+                }
+                show()
+            }
     }
 
     override fun onDestroyView() {

@@ -24,6 +24,16 @@ query ActiveOrder{
                     facetValues {
                         id
                     }
+                    optionGroups {
+                        id
+                        code
+                        name
+                        options {
+                            id
+                            code
+                            name
+                        }
+                    }
                 }
                 createdAt
                 updatedAt
@@ -34,6 +44,11 @@ query ActiveOrder{
                 }
                 priceWithTax
                 stockLevel
+                options {
+                    id
+                    code
+                    name
+                }
             }
         }
     }
