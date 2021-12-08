@@ -48,11 +48,17 @@ class CheckoutViewModel(
                 alertDialogEvent.value = AlertMessage(message = EMPTY_DELIVERY_LOCATION)
                 return false
             }
-            // * if savedLocation property is blank
-            orderDetails?.deliveryLocation!!.savedLocationName.isNullOrBlank()-> {
+            // * if streetline1 property is blank
+            orderDetails?.deliveryLocation!!.streetLine1.isNullOrBlank()-> {
                 alertDialogEvent.value = AlertMessage(message = EMPTY_DELIVERY_LOCATION)
                 return false
             }
+            // * if city property is blank
+            orderDetails?.deliveryLocation!!.city.isNullOrBlank()-> {
+                alertDialogEvent.value = AlertMessage(message = EMPTY_DELIVERY_LOCATION)
+                return false
+            }
+
             orderDetails?.paymentOption == null -> {
                 alertDialogEvent.value = AlertMessage(message = EMPTY_PAYMENT_OPTION)
                 return false

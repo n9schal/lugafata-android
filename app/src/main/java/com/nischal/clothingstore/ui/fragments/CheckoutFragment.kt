@@ -159,8 +159,12 @@ class CheckoutFragment : Fragment(R.layout.fragment_checkout) {
 
         // * add payment options
         val paymentOptions = arrayListOf<String>("Payment on Delivery")
-        val adapter = ArrayAdapter(requireContext(), R.layout.layout_dropdown_item, paymentOptions)
-        binding?.etPaymentOptions?.setAdapter(adapter)
+        val paymentsAdapter = ArrayAdapter(requireContext(), R.layout.layout_dropdown_item, paymentOptions)
+        binding?.etPaymentOptions?.setAdapter(paymentsAdapter)
+        // * add city options
+        val cityOptions = arrayListOf<String>("Dharan")
+        val citiesAdapter = ArrayAdapter(requireContext(), R.layout.layout_dropdown_item, cityOptions)
+        binding?.etCity?.setAdapter(citiesAdapter)
 
         // * setup order summary product list
         orderSummaryCartAdapter = OrderSummaryListAdapter(
@@ -172,7 +176,8 @@ class CheckoutFragment : Fragment(R.layout.fragment_checkout) {
         // * setup checkout button
         binding?.btnSubmitOrder?.setOnClickListener {
             checkoutViewModel.orderDetails?.deliveryLocation = Location(
-                savedLocationName = binding?.etShippingAddress?.text.toString(),
+                streetLine1 = binding?.etStreetLine?.text.toString(),
+                city = binding?.etCity?.text.toString(),
                 extraNote = binding?.etExtraNotes?.text.toString()
             )
             checkoutViewModel.orderDetails?.paymentOption = PaymentOption(

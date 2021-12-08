@@ -421,7 +421,7 @@ class MainRepository(
 
     private suspend fun setOrderShippingAddress(location: Location) {
         val input = CreateAddressInput(
-            streetLine1 = location.savedLocationName,
+            streetLine1 = location.streetLine1,
             city = Input.fromNullable(location.city),
             countryCode = "NP"
         )

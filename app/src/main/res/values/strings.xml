@@ -50,7 +50,7 @@
     <string name="txt_delivery">Delivery:</string>
     <string name="txt_order">Order:</string>
     <string name="text_shipping_address">Shipping Address</string>
-    <string name="text_hint_street_name_city">Street name, City</string>
+    <string name="text_hint_street_name">Street/tole, ward no.</string>
     <string name="text_hint_extra_notes_optional">Extra notes (optional)</string>
     <string name="text_title_my_profile">My Profile</string>
     <string name="option_title_text_my_orders">My Orders</string>

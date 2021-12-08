@@ -160,10 +160,10 @@ class ProductDetailsFragment : Fragment(R.layout.fragment_product_details) {
     private fun showSnackbar() {
         Snackbar.make(requireActivity().window.decorView.findViewById(android.R.id.content), "Product has been added to your bag.", Snackbar.LENGTH_LONG)
             .apply {
-                setAction("Show") {
-                    // todo navigate to bag page
-                    Timber.d("navigated to bag")
-                }
+//                    // todo navigate to bag page
+//                setAction("Show") {
+//                    Timber.d("navigated to bag")
+//                }
                 show()
             }
     }
