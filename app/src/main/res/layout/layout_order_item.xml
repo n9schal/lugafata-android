@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginTop="8dp"
+    android:id="@+id/clOrderItem"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorGrayLight"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/tvOrderNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.MaterialComponents.Headline5"
+        android:textSize="20sp"
+        tools:text="Order No. 12332121"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:textColor="@color/colorGrayDark"
+        android:text="@string/text_ordered_date"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintTop_toBottomOf="@id/tvOrderNumber"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/tvDateValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:layout_marginStart="4dp"
+        tools:text="20-Dec-2020, 3:00 PM"
+        app:layout_constraintTop_toTopOf="@id/tvDate"
+        app:layout_constraintBottom_toBottomOf="@id/tvDate"
+        app:layout_constraintStart_toEndOf="@id/tvDate"/>
+
+    <TextView
+        android:id="@+id/tvTotalAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:textColor="@color/colorGrayDark"
+        android:text="@string/text_total_amount"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintTop_toBottomOf="@id/tvDate"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTotalAmountValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:layout_marginStart="4dp"
+        tools:text="Nrs 200000"
+        app:layout_constraintStart_toEndOf="@id/tvTotalAmount"
+        app:layout_constraintTop_toTopOf="@id/tvTotalAmount"
+        app:layout_constraintBottom_toBottomOf="@id/tvTotalAmount"/>
+
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:textColor="@color/colorAccent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/text_status"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTotalAmount"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/tvStatusValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:textColor="@color/colorAccent"
+        tools:text="Order Placed"
+        android:layout_marginStart="4dp"
+        app:layout_constraintStart_toEndOf="@id/tvStatus"
+        app:layout_constraintTop_toTopOf="@id/tvStatus"
+        app:layout_constraintBottom_toBottomOf="@id/tvStatus"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -62,4 +62,11 @@
     <string name="btn_text_skip_for_now">Skip for now</string>
     <string name="logout_confirmation_message">Are you sure you want to Logout?</string>
     <string name="text_order_summary">Order Summary</string>
+    <string name="chip_text_pending_orders">Pending Orders</string>
+    <string name="chip_text_order_history">Order History</string>
+    <string name="text_empty_orders">You have no orders yet.</string>
+    <string name="text_ordered_date">Ordered date:</string>
+    <string name="text_total_amount">Total Amount:</string>
+    <string name="text_status">Status:</string>
+    <string name="toolbar_title_text_my_orders">My Orders</string>
 </resources>

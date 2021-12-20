@@ -17,6 +17,12 @@ import com.nischal.clothingstore.utils.Constants.SlugConstants.CATEGORIES
 import com.nischal.clothingstore.utils.Constants.Strings.APP_NAME
 import com.nischal.clothingstore.utils.Constants.VendureOrderStates.ADDING_ITEMS
 import com.nischal.clothingstore.utils.Constants.VendureOrderStates.ARRANGING_PAYMENT
+import com.nischal.clothingstore.utils.Constants.VendureOrderStates.CANCELLED
+import com.nischal.clothingstore.utils.Constants.VendureOrderStates.DELIVERED
+import com.nischal.clothingstore.utils.Constants.VendureOrderStates.PARTIALLY_SHIPPED
+import com.nischal.clothingstore.utils.Constants.VendureOrderStates.PAYMENT_AUTHORIZED
+import com.nischal.clothingstore.utils.Constants.VendureOrderStates.PAYMENT_SETTLED
+import com.nischal.clothingstore.utils.Constants.VendureOrderStates.SHIPPED
 import com.nischal.clothingstore.utils.Constants.VendurePaymentMethods.PAYMENT_ON_DELIVERY
 import com.nischal.clothingstore.utils.Resource
 import kotlinx.coroutines.CoroutineScope
@@ -346,6 +352,72 @@ class MainRepository(
                     }
                 }
                 response.postValue(Resource.success(null))
+            } catch (e: ApolloException) {
+                response.postValue(
+                    Resource.error(
+                        msg = e.message.toString(),
+                        data = null,
+                        title = APP_NAME
+                    )
+                )
+            }
+        }
+        return response
+    }
+
+    fun getOrdersQuery(
+        currentPage: Int,
+        pageSize: Int,
+        isPending: Boolean
+    ): LiveData<Resource<ArrayList<OrderDetails>>> {
+        val response = MutableLiveData<Resource<ArrayList<OrderDetails>>>()
+        viewModelScope.launch {
+            try {
+                response.postValue(Resource.loading(null))
+                val orderStates = if (isPending) {
+                    listOf<String>(
+                        PAYMENT_AUTHORIZED,
+                        PAYMENT_SETTLED,
+                        PARTIALLY_SHIPPED,
+                        SHIPPED
+                    )
+                } else {
+                    listOf<String>(
+                        DELIVERED,
+                        CANCELLED
+                    )
+                }
+                val skip = currentPage * pageSize
+                val orderSortParameter = OrderSortParameter(
+                    updatedAt = Input.fromNullable(SortOrder.DESC)
+                )
+                val orderFilterParameter = OrderFilterParameter(
+                    state = Input.fromNullable(
+                        StringOperators(
+                            in_ = Input.fromNullable(orderStates)
+                        )
+                    )
+                )
+
+                /**
+                 *  sort and filter options for order
+                 * */
+                val orderListOptions = OrderListOptions(
+                    skip = Input.fromNullable(skip),
+                    take = Input.fromNullable(pageSize),
+                    sort = Input.fromNullable(orderSortParameter),
+                    filter = Input.fromNullable(orderFilterParameter)
+                )
+                val result = apolloClient.query(
+                    ActiveCustomerQuery(options = Input.fromNullable(orderListOptions))
+                ).await()
+                if (result.data != null && result.data?.activeCustomer != null) {
+                    // * parse result to order list
+                    val pendingOrders = OrderDetails.parseToOrderDetails(result.data!!)
+                    response.postValue(Resource.success(pendingOrders))
+                } else {
+                    throw ApolloException("Something went wrong!")
+                }
             } catch (e: ApolloException) {
                 response.postValue(
                     Resource.error(

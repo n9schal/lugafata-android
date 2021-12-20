@@ -60,6 +60,14 @@ class Constants {
         const val CANCELLED = "Cancelled"
     }
 
+    object AppOrderStates{
+        const val ORDER_PLACED = "Order Placed"
+        const val ORDER_CONFIRMED = "Order Confirmed"
+        const val DELIVERY_STARTED = "Delivery Started"
+        const val DELIVERY_COMPLETE = "Delivered"
+        const val DELIVERY_CANCELLED = "Cancelled"
+    }
+
     object PaymentOptions{
         const val CASH_ON_DELIVERY = "Payment on delivery"
         const val ESEWA = "eSewa"

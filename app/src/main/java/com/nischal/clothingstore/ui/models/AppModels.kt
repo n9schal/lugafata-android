@@ -177,6 +177,44 @@ data class ProductVariant(
             }
             return productVariants
         }
+
+        /**
+         * parse active order fetch results to list of [ProductVariant]
+         * @param orderLines active order fetch result [ActiveCustomerQuery.Line]
+         * @return ArrayList of [ProductVariant]
+         * */
+        fun parseToProductVariants(orderLines: List<ActiveCustomerQuery.Line>): ArrayList<ProductVariant> {
+            val productVariants = arrayListOf<ProductVariant>()
+            orderLines.forEach { orderline ->
+                val imageUrl = if (orderline.productVariant.featuredAsset != null) {
+                    orderline.productVariant.featuredAsset.source
+                } else {
+                    ""
+                }
+                // * get facet value ids
+                val facetValueIds: ArrayList<String> = arrayListOf()
+                orderline.productVariant.product.facetValues.forEach { facetValue ->
+                    facetValueIds.add(facetValue.id)
+                }
+                // * map to product model
+                val productVariant = ProductVariant(
+                    productVariantId = orderline.productVariant.id,
+                    createdAt = orderline.productVariant.createdAt.toString(),
+                    updatedAt = orderline.productVariant.updatedAt.toString(),
+                    productVariantStockLevel = orderline.productVariant.stockLevel,
+                    qtyInCart = orderline.quantity,
+                    productVariantDescription = orderline.productVariant.product.description,
+                    productVariantName = orderline.productVariant.name,
+                    productVariantFeaturedAsset = Image(src = imageUrl),
+                    productVariantPrice = removeTrailingZeroInPrice(
+                        orderline.productVariant.priceWithTax
+                    ),
+                    facetValueIds = facetValueIds
+                )
+                productVariants.add(productVariant)
+            }
+            return productVariants
+        }
     }
 }
 
@@ -423,6 +461,30 @@ data class OrderDetails(
                 deliveryCharge = activeOrder.shippingWithTax / 100,
                 total = activeOrder.totalWithTax / 100
             )
+        }
+
+        fun parseToOrderDetails(data: ActiveCustomerQuery.Data): ArrayList<OrderDetails> {
+            val orders = arrayListOf<OrderDetails>()
+            data.activeCustomer?.orders?.items?.forEach { order ->
+                val orderDetails = OrderDetails(
+                    id = order.id,
+                    orderNumber = order.code,
+                    productVariantList = ProductVariant.parseToProductVariants(order.lines),
+                    subTotal = order.subTotalWithTax / 100,
+                    deliveryCharge = order.shippingWithTax / 100,
+                    total = order.totalWithTax / 100,
+                    deliveryLocation = Location(
+                        streetLine1 = order.shippingAddress?.streetLine1 ?: "",
+                        city = order.shippingAddress?.city ?: ""
+                    ),
+                    createdAt = order.createdAt.toString(),
+                    vendureOrderState = order.state,
+                    phoneNumber = data.activeCustomer.phoneNumber ?: ""
+                )
+
+                orders.add(orderDetails)
+            }
+            return orders
         }
     }
 }

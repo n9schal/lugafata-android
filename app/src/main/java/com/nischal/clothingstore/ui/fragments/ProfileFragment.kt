@@ -5,6 +5,7 @@ import android.view.View
 import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.nischal.clothingstore.R
 import com.nischal.clothingstore.databinding.FragmentProfileBinding
 import com.nischal.clothingstore.ui.activities.AuthActivity
@@ -69,6 +70,10 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                     authViewModel.logoutMutation()
                 }
             )
+        }
+
+        binding?.includedMyOrders?.clOptionContainer?.setOnClickListener {
+            findNavController().navigate(R.id.action_profileFragment_to_myOrdersFragment)
         }
     }
 
