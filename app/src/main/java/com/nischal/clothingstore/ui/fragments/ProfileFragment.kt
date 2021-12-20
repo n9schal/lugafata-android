@@ -75,6 +75,10 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         binding?.includedMyOrders?.clOptionContainer?.setOnClickListener {
             findNavController().navigate(R.id.action_profileFragment_to_myOrdersFragment)
         }
+
+        binding?.includedEditProfile?.clOptionContainer?.setOnClickListener {
+            findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)
+        }
     }
 
     private fun setupViews() {

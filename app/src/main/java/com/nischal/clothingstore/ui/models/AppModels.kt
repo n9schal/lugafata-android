@@ -47,6 +47,17 @@ data class UserDetails(
                 email = data.emailAddress
             )
         }
+
+        fun parseToUserDetails(data: UpdateCustomerMutation.UpdateCustomer): UserDetails {
+            return UserDetails(
+                id = data.id,
+                displayName = data.firstName + " " + data.lastName,
+                firstName = data.firstName,
+                lastName = data.lastName,
+                phoneNumber = data.phoneNumber ?: "",
+                email = data.emailAddress
+            )
+        }
     }
 }
 

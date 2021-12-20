@@ -73,6 +73,9 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_profileFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
     </fragment>
     <fragment
         android:id="@+id/subCategoriesFragment"
@@ -124,4 +127,9 @@
         android:id="@+id/myOrdersFragment"
         android:name="com.nischal.clothingstore.ui.fragments.MyOrdersFragment"
         android:label="MyOrdersFragment" />
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.nischal.clothingstore.ui.fragments.EditProfileFragment"
+        android:label="fragment_edit_profile"
+        tools:layout="@layout/fragment_edit_profile" />
 </navigation>

@@ -1,0 +1,12 @@
+mutation UpdateCustomer($input: UpdateCustomerInput!) {
+    updateCustomer(input: $input) {
+        id
+        createdAt
+        updatedAt
+        title
+        firstName
+        lastName
+        phoneNumber
+        emailAddress
+    }
+}

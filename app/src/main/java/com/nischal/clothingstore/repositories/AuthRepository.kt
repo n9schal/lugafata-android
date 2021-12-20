@@ -192,6 +192,40 @@ class AuthRepository(
         return response
     }
 
+    fun updateCustomerMutation(userDetails: UserDetails): LiveData<Resource<UserDetails>> {
+        val response = MutableLiveData<Resource<UserDetails>>()
+        viewModelScope.launch {
+            try {
+                response.postValue(Resource.loading(null))
+                val input = UpdateCustomerInput(
+                    firstName = Input.fromNullable(userDetails.firstName),
+                    lastName = Input.fromNullable(userDetails.lastName),
+                    phoneNumber = Input.fromNullable(userDetails.phoneNumber)
+                )
+                val result = apolloClient.mutate(UpdateCustomerMutation(input = input))
+                    .await()
+                if (result.data != null) {
+                    val profile: UserDetails =
+                        UserDetails.parseToUserDetails(result.data!!.updateCustomer)
+                    prefsManager.setProfileInfo(profile)
+                    response.postValue(Resource.success(profile))
+                } else {
+                    throw ApolloException(GENERIC_ERROR_MESSAGE)
+                }
+
+            } catch (e: ApolloException) {
+                response.postValue(
+                    Resource.error(
+                        msg = e.message.toString(),
+                        data = null,
+                        title = APP_NAME
+                    )
+                )
+            }
+        }
+        return response
+    }
+
     fun requestPasswordReset(email: String): LiveData<Resource<Any?>> {
         val response = MutableLiveData<Resource<Any?>>()
         viewModelScope.launch {
@@ -251,6 +285,6 @@ class AuthRepository(
         }
         return response
     }
-
+    fun getProfileInfoFromPrefs() = prefsManager.getProfileInfo()
     fun clearPreferences() = prefsManager.clearData()
 }

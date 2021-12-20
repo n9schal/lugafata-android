@@ -10,6 +10,7 @@ import com.nischal.clothingstore.repositories.AuthRepository
 import com.nischal.clothingstore.ui.models.AlertMessage
 import com.nischal.clothingstore.ui.models.LoginRequest
 import com.nischal.clothingstore.ui.models.RegisterRequest
+import com.nischal.clothingstore.ui.models.UserDetails
 import com.nischal.clothingstore.utils.Constants
 import com.nischal.clothingstore.utils.Resource
 import com.nischal.clothingstore.utils.SingleLiveEvent
@@ -22,6 +23,7 @@ class AuthViewModel(
     var loginMutationMediator = MediatorLiveData<Resource<LoginMutation.Data>>()
     var requestPasswordResetMediator = MediatorLiveData<Resource<Any?>>()
     var logoutMutationMediator = MediatorLiveData<Resource<Boolean>>()
+    var updateCustomerMutationMediator = MediatorLiveData<Resource<UserDetails>>()
 
     val alertDialogEvent = SingleLiveEvent<AlertMessage>()
 
@@ -61,6 +63,18 @@ class AuthViewModel(
         }
     }
 
+    fun updateCustomer(userDetails: UserDetails) {
+        if (validateEditProfile(userDetails)) {
+            updateCustomerMutationMediator.addSource(
+                authRepository.updateCustomerMutation(
+                    userDetails
+                )
+            ) {
+                updateCustomerMutationMediator.value = it
+            }
+        }
+    }
+
     fun logoutMutation() {
         logoutMutationMediator.addSource(authRepository.logoutMutation()) {
             logoutMutationMediator.value = it
@@ -68,6 +82,7 @@ class AuthViewModel(
     }
 
     fun clearPreferences() = authRepository.clearPreferences()
+    fun getProfileInfoFromPrefs() = authRepository.getProfileInfoFromPrefs()
 
     private fun validateSignUp(registerRequest: RegisterRequest): Boolean {
         when {
@@ -111,6 +126,33 @@ class AuthViewModel(
             registerRequest.password.trim() != registerRequest.rePassword.trim() -> {
                 alertDialogEvent.value =
                     AlertMessage(message = Constants.ValidationErrorMessages.ERR_INVALID_REPASSWORD)
+                return false
+            }
+        }
+        return true
+    }
+
+    private fun validateEditProfile(userDetails: UserDetails): Boolean {
+        when {
+            userDetails.firstName.trim().isEmpty() -> {
+                alertDialogEvent.value =
+                    AlertMessage(message = Constants.ValidationErrorMessages.ERR_EMPTY_FIRST_NAME)
+                return false
+            }
+            userDetails.lastName.trim().isEmpty() -> {
+                alertDialogEvent.value =
+                    AlertMessage(message = Constants.ValidationErrorMessages.ERR_EMPTY_LAST_NAME)
+                return false
+            }
+            userDetails.phoneNumber.trim().isEmpty() -> {
+                alertDialogEvent.value =
+                    AlertMessage(message = Constants.ValidationErrorMessages.ERR_INVALID_MOBILE_NUMBER)
+                return false
+            }
+            !userDetails.phoneNumber.trim()
+                .matches(Constants.ValidationRegex.VALID_PHONE_NUMBER.toRegex()) -> {
+                alertDialogEvent.value =
+                    AlertMessage(message = Constants.ValidationErrorMessages.ERR_INVALID_MOBILE_NUMBER)
                 return false
             }
         }
