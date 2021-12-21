@@ -7,10 +7,7 @@ import com.apollographql.apollo.api.ApolloExperimental
 import com.nischal.clothingstore.ActiveCustomerQuery
 import com.nischal.clothingstore.LoginMutation
 import com.nischal.clothingstore.repositories.AuthRepository
-import com.nischal.clothingstore.ui.models.AlertMessage
-import com.nischal.clothingstore.ui.models.LoginRequest
-import com.nischal.clothingstore.ui.models.RegisterRequest
-import com.nischal.clothingstore.ui.models.UserDetails
+import com.nischal.clothingstore.ui.models.*
 import com.nischal.clothingstore.utils.Constants
 import com.nischal.clothingstore.utils.Resource
 import com.nischal.clothingstore.utils.SingleLiveEvent
@@ -24,6 +21,7 @@ class AuthViewModel(
     var requestPasswordResetMediator = MediatorLiveData<Resource<Any?>>()
     var logoutMutationMediator = MediatorLiveData<Resource<Boolean>>()
     var updateCustomerMutationMediator = MediatorLiveData<Resource<UserDetails>>()
+    var updateCustomerPasswordMutationMediator = MediatorLiveData<Resource<Any?>>()
 
     val alertDialogEvent = SingleLiveEvent<AlertMessage>()
 
@@ -75,6 +73,19 @@ class AuthViewModel(
         }
     }
 
+    fun updateCustomerPassword(changePasswordRequest: ChangePasswordRequest) {
+        if (validatePasswordChange(changePasswordRequest)) {
+            updateCustomerPasswordMutationMediator.addSource(
+                authRepository.updateCustomerPasswordMutation(
+                    changePasswordRequest.currentPassword,
+                    changePasswordRequest.newPassword
+                )
+            ) {
+                updateCustomerPasswordMutationMediator.value = it
+            }
+        }
+    }
+
     fun logoutMutation() {
         logoutMutationMediator.addSource(authRepository.logoutMutation()) {
             logoutMutationMediator.value = it
@@ -83,6 +94,33 @@ class AuthViewModel(
 
     fun clearPreferences() = authRepository.clearPreferences()
     fun getProfileInfoFromPrefs() = authRepository.getProfileInfoFromPrefs()
+
+    private fun validatePasswordChange(changePasswordRequest: ChangePasswordRequest): Boolean {
+        when {
+            changePasswordRequest.currentPassword.trim().isEmpty() -> {
+                alertDialogEvent.value =
+                    AlertMessage(message = Constants.ValidationErrorMessages.ERR_EMPTY_PASSWORD)
+                return false
+            }
+            changePasswordRequest.newPassword.trim().isEmpty() -> {
+                alertDialogEvent.value =
+                    AlertMessage(message = Constants.ValidationErrorMessages.ERR_EMPTY_NEW_PASSWORD)
+                return false
+            }
+            !changePasswordRequest.newPassword.trim()
+                .matches(Constants.ValidationRegex.ATLEAST_SIX_CHARACTERS.toRegex()) -> {
+                alertDialogEvent.value =
+                    AlertMessage(message = Constants.ValidationErrorMessages.ERR_INVALID_PASSWORD)
+                return false
+            }
+            changePasswordRequest.newPassword.trim() != changePasswordRequest.repeatPassword.trim() -> {
+                alertDialogEvent.value =
+                    AlertMessage(message = Constants.ValidationErrorMessages.ERR_INVALID_REPASSWORD)
+                return false
+            }
+        }
+        return true
+    }
 
     private fun validateSignUp(registerRequest: RegisterRequest): Boolean {
         when {

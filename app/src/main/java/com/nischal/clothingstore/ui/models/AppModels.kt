@@ -534,3 +534,9 @@ data class Location(
     var lng: Double = 0.0,
     var isSelected: Boolean = false
 )
+
+data class ChangePasswordRequest(
+    val currentPassword: String,
+    val newPassword: String,
+    val repeatPassword: String
+)

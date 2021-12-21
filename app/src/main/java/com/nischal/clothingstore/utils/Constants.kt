@@ -12,6 +12,8 @@ class Constants {
         const val ERR_EMPTY_MOBILE_NUMBER = "Mobile number is required."
         const val ERR_EMPTY_EMAIL = "Email is required."
         const val ERR_EMPTY_PASSWORD = "Password is required."
+        const val ERR_EMPTY_NEW_PASSWORD = "New password field is empty."
+        const val ERR_EMPTY_REPEAT_PASSWORD = "Repeat password field is empty."
         const val ERR_INVALID_MOBILE_NUMBER = "Please provide valid mobile number."
         const val ERR_INVALID_EMAIL = "Please provide valid email address."
         const val ERR_INVALID_PASSWORD = "Password has to be minimum 6 characters long."

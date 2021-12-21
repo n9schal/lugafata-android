@@ -79,6 +79,10 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         binding?.includedEditProfile?.clOptionContainer?.setOnClickListener {
             findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)
         }
+
+        binding?.includedChangePassword?.clOptionContainer?.setOnClickListener {
+            findNavController().navigate(R.id.action_profileFragment_to_changePasswordFragment)
+        }
     }
 
     private fun setupViews() {

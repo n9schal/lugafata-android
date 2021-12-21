@@ -285,6 +285,43 @@ class AuthRepository(
         }
         return response
     }
+
+    fun updateCustomerPasswordMutation(
+        currentPassword: String,
+        newPassword: String
+    ): LiveData<Resource<Any?>> {
+        val response = MutableLiveData<Resource<Any?>>()
+        viewModelScope.launch {
+            try {
+                response.postValue(Resource.loading(null))
+                val result = apolloClient.mutate(
+                    UpdateCustomerPasswordMutation(
+                        currentPassword = currentPassword,
+                        newPassword = newPassword
+                    )
+                ).await()
+                result.data?.updateCustomerPassword?.asNativeAuthStrategyError?.let {
+                    throw ApolloException(it.message)
+                }
+                result.data?.updateCustomerPassword?.asInvalidCredentialsError?.let {
+                    throw ApolloException(it.message)
+                }
+                result.data?.updateCustomerPassword?.asSuccess?.let {
+                    response.postValue(Resource.success(null))
+                }
+            } catch (e: ApolloException) {
+                response.postValue(
+                    Resource.error(
+                        msg = e.message.toString(),
+                        data = null,
+                        title = APP_NAME
+                    )
+                )
+            }
+        }
+        return response
+    }
+
     fun getProfileInfoFromPrefs() = prefsManager.getProfileInfo()
     fun clearPreferences() = prefsManager.clearData()
 }
