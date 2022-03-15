@@ -1,8 +1,15 @@
 package com.nischal.clothingstore.ui.fragments
 
+import android.graphics.Color
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.util.Patterns
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -93,6 +100,64 @@ class LoginFragment: Fragment(R.layout.fragment_login) {
 
     private fun setupViews() {
         setupTextFieldsValidation()
+        setupSpannableText()
+    }
+
+    private fun setupSpannableText() {
+        val spannableTextTermsOfServiceAndPrivacyPolicy =
+            SpannableString(getString(R.string.txt_terms_of_service_n_privacy_policy))
+
+        val privacyPolicy = object : ClickableSpan() {
+            override fun onClick(p0: View) {
+                showTermsAndConditions(Constants.Strings.PRIVACY_POLICY)
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                ds.color = ContextCompat.getColor(requireContext(), R.color.colorAccent)
+                ds.isUnderlineText = true
+            }
+        }
+
+        val termsOfService = object : ClickableSpan() {
+            override fun onClick(p0: View) {
+                showTermsAndConditions(Constants.Strings.TERMS_AND_CONDITIONS)
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                ds.color = ContextCompat.getColor(requireContext(), R.color.colorAccent)
+                ds.isUnderlineText = true
+            }
+        }
+
+        val privacyPolicyText = "Privacy Policy"
+        val termsOfServiceText = "Terms of Service"
+
+        spannableTextTermsOfServiceAndPrivacyPolicy.setSpan(
+            termsOfService,
+            spannableTextTermsOfServiceAndPrivacyPolicy.indexOf(termsOfServiceText),
+            spannableTextTermsOfServiceAndPrivacyPolicy.indexOf(termsOfServiceText) + termsOfServiceText.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        spannableTextTermsOfServiceAndPrivacyPolicy.setSpan(
+            privacyPolicy,
+            spannableTextTermsOfServiceAndPrivacyPolicy.indexOf(privacyPolicyText),
+            spannableTextTermsOfServiceAndPrivacyPolicy.indexOf(privacyPolicyText) + privacyPolicyText.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        binding?.tvTermsAndConditions?.apply {
+            text = spannableTextTermsOfServiceAndPrivacyPolicy
+            movementMethod = LinkMovementMethod.getInstance()
+            highlightColor = Color.TRANSPARENT
+        }
+    }
+
+    private fun showTermsAndConditions(slug: String) {
+        // todo implement the method
+//        val bundle = Bundle().apply {
+//            putString("slug", slug)
+//        }
+//        findNavController().navigate(R.id.action_loginFragment_to_termsAndPrivacyFragment, bundle)
     }
 
     private fun setupTextFieldsValidation() {

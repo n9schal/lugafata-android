@@ -77,4 +77,5 @@
     <string name="text_field_new_password">New Password</string>
     <string name="btn_text_change_password">Change Password</string>
     <string name="toolbar_title_change_password">Change Password</string>
+    <string name="txt_terms_of_service_n_privacy_policy">By signing in, you are agreeing to our Terms of Service and Privacy Policy</string>
 </resources>

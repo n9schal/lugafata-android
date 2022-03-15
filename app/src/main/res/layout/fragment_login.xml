@@ -112,4 +112,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnGotoSignup"/>
 
+    <TextView
+        android:id="@+id/tvTermsAndConditions"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="64dp"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnSkip"
+        tools:text="@string/txt_terms_of_service_n_privacy_policy" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
